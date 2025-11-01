@@ -2,14 +2,14 @@
   "placeholderImages": [
     {
       "id": "hero-1",
-      "description": "A beautiful modern house with a pool at dusk.",
-      "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "modern house"
+      "description": "Elegant modern single family home with beautiful landscaping, white and grey exterior, professional real estate photography, clean architectural lines, manicured lawn, blue sky background, luxury residential property, contemporary design, welcoming entrance",
+      "imageUrl": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzaW5nbGUlMjBmYW1pbHklMjBob21lfGVufDB8fHx8MTc2MjExMTAyMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "family home"
     },
     {
       "id": "property-1-ext",
-      "description": "Exterior of a modern suburban house.",
-      "imageUrl": "https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Beautiful modern two story family home with brick and stone exterior, professional real estate photography, well maintained landscaping, driveway and garage, suburban neighborhood setting, clean architectural design, welcoming front entrance",
+      "imageUrl": "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxob3VzZXxlbnwwfHx8fDE3NjIxMTA5NzZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "modern house"
     },
     {
@@ -26,9 +26,9 @@
     },
     {
       "id": "property-2-ext",
-      "description": "Exterior of a luxury apartment building.",
-      "imageUrl": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "apartment building"
+      "description": "Charming single story ranch style home with white siding and black shutters, professional real estate photography, beautiful front porch, mature trees, well maintained yard, classic American architecture, inviting entrance",
+      "imageUrl": "https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ranch home"
     },
     {
       "id": "property-2-int-1",
@@ -44,9 +44,9 @@
     },
     {
       "id": "property-3-ext",
-      "description": "Exterior of a cozy condo complex.",
-      "imageUrl": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "condo building"
+      "description": "Luxury contemporary home with stone and wood exterior, professional real estate photography, large windows, modern architectural design, beautifully landscaped front yard, upscale neighborhood, clean lines and premium materials",
+      "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "luxury home"
     },
     {
       "id": "property-3-int-1",

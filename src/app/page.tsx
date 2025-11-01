@@ -6,258 +6,432 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PropertyCard } from "@/components/property-card";
 import { properties } from "@/lib/mock-data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Search, ChevronRight } from "lucide-react";
+import { Search, ChevronRight, ChevronLeft, MapPin, Star, Phone, ShieldCheck, Cog, DollarSign } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function HomePage() {
   const featuredProperties = properties.filter(p => p.featured);
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-1');
+  const aboutImage = PlaceHolderImages.find(p => p.id === 'agent-team');
+  const mapImage = PlaceHolderImages.find(p => p.id === 'map-placeholder');
   
   const testimonials = [
     {
-      name: "Samantha R.",
+      name: "Jennifer & Steve Martinez",
+      location: "Homebuyers, Maple Grove",
       avatarId: "agent-1",
-      text: "R&R Realty helped us find our dream home in just a few weeks. The team was professional, knowledgeable, and incredibly supportive throughout the entire process. We couldn't be happier!"
+      text: "R&R Realty made our home buying process incredibly smooth. Their knowledge of the local market and dedication to finding us the perfect home was outstanding. We couldn't be happier!"
     },
     {
-      name: "Michael B.",
+      name: "Michael Johnson",
+      location: "Home Seller, Edina",
       avatarId: "agent-2",
-      text: "Selling our property with R&R Realty was a breeze. They handled everything with such expertise, and we got a great price. Their marketing strategy was top-notch. Highly recommended!"
+      text: "When it came time to sell our family home, R&R Realty exceeded all expectations. They got us top dollar and handled everything professionally from start to finish."
     },
     {
-      name: "Emily and Tom W.",
+      name: "Lisa & David Chen",
+      location: "First-time Buyers, Plymouth",
       avatarId: "agent-3",
-      text: "As first-time homebuyers, we were nervous, but the agents at R&R Realty guided us every step of the way. Their patience and expertise made the experience enjoyable and stress-free."
-    },
-    {
-      name: "David L.",
-      avatarId: "agent-2",
-      text: "I've worked with many real estate agencies over the years, and R&R Realty stands out. Their market insights and negotiation skills are unparalleled. I'll definitely be back for my next investment."
+      text: "As first-time homebuyers, we were nervous about the process. The R&R team guided us every step of the way and helped us find our dream home within our budget."
     }
   ];
 
   const blogPosts = [
     {
       id: "blog-1",
-      title: "5 Tips for First-Time Homebuyers",
-      date: "May 28, 2024",
-      author: "Jane Doe",
+      title: "2025 Minnesota Real Estate Market Predictions",
+      date: "December 15, 2024",
+      readTime: "5 min read",
+      category: "Market Analysis",
       imageId: "property-5-ext",
-      imageHint: "house key"
+      imageHint: "house key",
+      excerpt: "Discover what experts predict for the Minnesota housing market in 2025, including price trends, inventory levels, and the best times to buy or sell."
     },
     {
       id: "blog-2",
-      title: "How to Stage Your Home for a Quick Sale",
-      date: "May 22, 2024",
-      author: "John Smith",
+      title: "First-Time Homebuyer's Complete Guide",
+      date: "December 12, 2024",
+      readTime: "7 min read",
+      category: "Buying Guide",
       imageId: "property-2-int-1",
-      imageHint: "staged living room"
+      imageHint: "staged living room",
+      excerpt: "Everything you need to know as a first-time homebuyer, from getting pre-approved to closing day. Navigate the process with confidence."
     },
     {
       id: "blog-3",
-      title: "Understanding the Current Housing Market Trends",
-      date: "May 15, 2024",
-      author: "Emily White",
+      title: "10 Home Staging Tips That Sell Faster",
+      date: "December 10, 2024",
+      readTime: "4 min read",
+      category: "Selling Tips",
       imageId: "property-7-ext",
-      imageHint: "house chart"
+      imageHint: "house chart",
+      excerpt: "Transform your home into a buyer's dream with these proven staging techniques. Simple changes that can increase your home's value and appeal."
+    },
+     {
+      id: "blog-4",
+      title: "Understanding Mortgage Rates in 2024",
+      date: "December 8, 2024",
+      readTime: "6 min read",
+      category: "Finance Guide",
+      imageId: "property-7-ext",
+      imageHint: "house chart",
+      excerpt: "Get insights into current mortgage rates, how they affect your buying power, and strategies to secure the best rate for your home loan."
     }
   ];
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
-      <section className="relative w-full h-[80vh] bg-cover bg-center" style={{ backgroundImage: `url(${heroImage?.imageUrl})` }}>
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="relative container mx-auto px-4 md:px-6 h-full flex flex-col items-center justify-center text-center text-white">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-            Find Your Dream Home
+      <section className="relative h-screen flex items-center justify-center">
+        <Image src={heroImage?.imageUrl ?? ''} alt="Elegant modern single family home" fill className="object-cover" />
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="relative z-10 text-center text-white max-w-5xl mx-auto px-6">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            Helping You Buy & Sell<br />
+            Single Family Homes<br />
+            <span className="text-secondary">with Confidence</span>
           </h1>
-          <p className="max-w-2xl mt-4 text-lg md:text-xl text-neutral-200">
-            We help you find the best properties in the most desirable locations.
+          <p className="text-xl mb-8 text-gray-200 max-w-2xl mx-auto">
+            Your trusted partner in finding the perfect home or selling your property at the best value in today's market.
           </p>
-          <div className="mt-8 w-full max-w-4xl p-4 bg-background/20 backdrop-blur-sm rounded-lg">
-            <form className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+          <div className="bg-white shadow-xl rounded-xl p-6 mb-8 text-gray-700 max-w-5xl mx-auto border border-gray-100">
+            <form className="grid md:grid-cols-4 gap-4 items-end">
               <div className="space-y-2 text-left">
-                <label className="text-sm font-medium text-white" htmlFor="location-hero">Location</label>
-                <Input id="location-hero" placeholder="Enter a city or zip code" className="bg-white/90 text-foreground" />
+                <Label className="text-sm font-semibold text-gray-700 mb-2">Location</Label>
+                <div className="relative">
+                  <Input type="text" placeholder="City, ZIP code, or neighborhood" className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors" />
+                   <i className="ri-map-pin-line text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                </div>
               </div>
               <div className="space-y-2 text-left">
-                <label className="text-sm font-medium text-white" htmlFor="type-hero">Property Type</label>
-                <Select>
-                  <SelectTrigger id="type-hero" className="bg-white/90 text-foreground">
-                    <SelectValue placeholder="All Types" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="House">House</SelectItem>
-                    <SelectItem value="Apartment">Apartment</SelectItem>
-                    <SelectItem value="Condo">Condo</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <Label className="text-sm font-semibold text-gray-700 mb-2">Price Range</Label>
+                  <Select>
+                    <SelectTrigger className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors text-left h-auto">
+                      <i className="ri-money-dollar-circle-line text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                      <SelectValue placeholder="Any Price" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="any">Any Price</SelectItem>
+                      <SelectItem value="0-300000">Under $300K</SelectItem>
+                      <SelectItem value="300000-500000">$300K - $500K</SelectItem>
+                      <SelectItem value="500000-750000">$500K - $750K</SelectItem>
+                      <SelectItem value="750000+">$750K+</SelectItem>
+                    </SelectContent>
+                  </Select>
               </div>
               <div className="space-y-2 text-left">
-                <label className="text-sm font-medium text-white" htmlFor="status-hero">Status</label>
-                <Select>
-                  <SelectTrigger id="status-hero" className="bg-white/90 text-foreground">
-                    <SelectValue placeholder="For Sale or Rent" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="For Sale">For Sale</SelectItem>
-                    <SelectItem value="For Rent">For Rent</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="text-sm font-semibold text-gray-700 mb-2">Bedrooms</Label>
+                 <Select>
+                    <SelectTrigger className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors text-left h-auto">
+                       <i className="ri-hotel-bed-line text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                      <SelectValue placeholder="Any Beds" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="any">Any Beds</SelectItem>
+                      <SelectItem value="1">1+ Bedroom</SelectItem>
+                      <SelectItem value="2">2+ Bedrooms</SelectItem>
+                      <SelectItem value="3">3+ Bedrooms</SelectItem>
+                      <SelectItem value="4">4+ Bedrooms</SelectItem>
+                      <SelectItem value="5">5+ Bedrooms</SelectItem>
+                    </SelectContent>
+                  </Select>
               </div>
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" size="lg" asChild>
-                <Link href="/properties">
-                  <Search className="mr-2 h-5 w-5" />
-                  Search
-                </Link>
+              <Button type="submit" className="w-full bg-secondary text-white py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all hover:shadow-lg text-sm font-semibold transform hover:scale-105 duration-200 flex items-center justify-center h-auto">
+                <i className="ri-search-line text-lg mr-2"></i>
+                Search Properties
               </Button>
             </form>
           </div>
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-secondary">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex justify-between items-center mb-12">
-            <div>
-              <h2 className="text-3xl font-bold text-primary">Featured Properties</h2>
-              <p className="mt-2 text-muted-foreground">
-                Browse our curated list of top properties in the market right now.
-              </p>
-            </div>
-            <Button asChild variant="outline">
-              <Link href="/properties">
-                View All <ChevronRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-primary mb-4">Featured Properties</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Discover our handpicked selection of premium single-family homes available in prime locations.
+            </p>
           </div>
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
+           <Carousel
+            opts={{ align: "start", loop: true }}
             className="w-full"
           >
-            <CarouselContent>
+            <CarouselContent className="-ml-4">
               {featuredProperties.map((property) => (
-                <CarouselItem key={property.id} className="md:basis-1/2 lg:basis-1/3">
-                  <div className="p-1">
-                    <PropertyCard property={property} />
-                  </div>
+                <CarouselItem key={property.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                  <PropertyCard property={property} />
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-[-50px] top-1/2 -translate-y-1/2 hidden lg:flex" />
-            <CarouselNext className="absolute right-[-50px] top-1/2 -translate-y-1/2 hidden lg:flex" />
+            <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
           </Carousel>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center max-w-3xl mx-auto">
-              <h2 className="text-3xl font-bold text-primary">What Our Clients Say</h2>
-              <p className="mt-2 text-muted-foreground">
-                Read testimonials from our happy customers.
-              </p>
-            </div>
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full mt-12"
-            >
-              <CarouselContent>
-                {testimonials.map((testimonial, index) => {
-                    const avatar = PlaceHolderImages.find(p => p.id === testimonial.avatarId);
-                    return (
-                        <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                        <div className="p-4">
-                            <Card className="h-full">
-                            <CardContent className="p-6 flex flex-col justify-center items-center text-center">
-                                <Avatar className="w-20 h-20 mb-4 border-4 border-primary">
-                                    {avatar && <AvatarImage src={avatar.imageUrl} alt={testimonial.name} />}
-                                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <p className="text-muted-foreground italic mb-4">"{testimonial.text}"</p>
-                                <h3 className="font-bold text-lg text-primary">{testimonial.name}</h3>
-                            </CardContent>
-                            </Card>
-                        </div>
-                        </CarouselItem>
-                    );
-                })}
-              </CarouselContent>
-              <CarouselPrevious className="absolute left-[-50px] top-1/2 -translate-y-1/2 hidden lg:flex" />
-              <CarouselNext className="absolute right-[-50px] top-1/2 -translate-y-1/2 hidden lg:flex" />
-            </Carousel>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-24 bg-secondary">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex justify-between items-center mb-12">
-            <div>
-              <h2 className="text-3xl font-bold text-primary">From Our Blog</h2>
-              <p className="mt-2 text-muted-foreground">
-                Tips and insights on the real estate market.
-              </p>
-            </div>
-             <Button asChild variant="outline">
-              <Link href="/blog">
-                View All <ChevronRight className="ml-2 h-4 w-4" />
-              </Link>
+          <div className="text-center mt-12">
+            <Button asChild className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
+              <Link href="/properties">View All Properties</Link>
             </Button>
           </div>
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
+        </div>
+      </section>
+
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-primary mb-4">Why Choose R&R Realty</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              We provide exceptional service and expertise to make your real estate journey smooth and successful.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ShieldCheck className="w-8 h-8 text-secondary" />
+              </div>
+              <h3 className="text-xl font-semibold text-primary mb-3">Trusted Experts</h3>
+              <p className="text-gray-600">
+                Over 15 years of experience helping families find their perfect homes with integrity and professionalism.
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Cog className="w-8 h-8 text-secondary" />
+              </div>
+              <h3 className="text-xl font-semibold text-primary mb-3">Seamless Process</h3>
+              <p className="text-gray-600">
+                We handle all the details from start to finish, making your buying or selling experience stress-free.
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MapPin className="w-8 h-8 text-secondary" />
+              </div>
+              <h3 className="text-xl font-semibold text-primary mb-3">Local Knowledge</h3>
+              <p className="text-gray-600">
+                Deep understanding of Minnesota neighborhoods, schools, and market trends to guide your decisions.
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <DollarSign className="w-8 h-8 text-secondary" />
+              </div>
+              <h3 className="text-xl font-semibold text-primary mb-3">Top Value Deals</h3>
+              <p className="text-gray-600">
+                Negotiating the best prices and terms to maximize your investment and savings in every transaction.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-primary mb-4">What Our Clients Say</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Hear from families who trusted us with their home buying and selling journey.
+            </p>
+          </div>
+          <Carousel opts={{ align: "start", loop: true }} className="w-full">
             <CarouselContent>
-              {blogPosts.map((post) => {
-                  const image = PlaceHolderImages.find(p => p.id === post.imageId);
-                  return (
-                    <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3">
-                    <div className="p-1">
-                        <Card className="overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1 duration-300 group border-none shadow-lg rounded-lg">
-                        <Link href="#" className="block">
-                            <div className="relative">
-                            {image && (
-                                <Image
-                                src={image.imageUrl}
-                                alt={post.title}
-                                width={600}
-                                height={400}
-                                className="object-cover w-full h-56 group-hover:scale-105 transition-transform duration-300"
-                                data-ai-hint={post.imageHint}
-                                />
-                            )}
-                            </div>
-                            <CardContent className="p-4 bg-background">
-                                <p className="text-sm text-muted-foreground">{post.date} by {post.author}</p>
-                                <h3 className="font-semibold text-lg leading-snug tracking-tight text-primary truncate my-1">
-                                    {post.title}
-                                </h3>
-                                <span className="text-sm text-primary font-semibold hover:underline">Read More <ChevronRight className="inline h-4 w-4" /></span>
-                            </CardContent>
-                        </Link>
-                        </Card>
+              {testimonials.map((testimonial, index) => {
+                const avatar = PlaceHolderImages.find(p => p.id === testimonial.avatarId);
+                const initials = testimonial.name.split(' ').map(n => n[0]).join('');
+                return (
+                  <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                    <div className="p-4 h-full">
+                      <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow h-full flex flex-col">
+                        <div className="flex items-center mb-4 text-yellow-400">
+                          {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                        </div>
+                        <p className="text-gray-600 mb-6 italic flex-grow">"{testimonial.text}"</p>
+                        <div className="flex items-center">
+                          <Avatar className="w-12 h-12 mr-4 bg-secondary/20">
+                            {avatar && <AvatarImage src={avatar.imageUrl} alt={testimonial.name} />}
+                            <AvatarFallback className="text-secondary font-semibold bg-transparent">{initials}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-semibold text-primary">{testimonial.name}</div>
+                            <div className="text-gray-600 text-sm">{testimonial.location}</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    </CarouselItem>
-                  )
+                  </CarouselItem>
+                )
               })}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-[-50px] top-1/2 -translate-y-1/2 hidden lg:flex" />
-            <CarouselNext className="absolute right-[-50px] top-1/2 -translate-y-1/2 hidden lg:flex" />
+             <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
+            <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
           </Carousel>
         </div>
       </section>
+
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="h-96 relative rounded-lg overflow-hidden">
+               {aboutImage && <Image src={aboutImage.imageUrl} alt="R&R Realty Team" fill className="object-cover" data-ai-hint={aboutImage.imageHint} />}
+            </div>
+            <div>
+              <h2 className="text-4xl font-bold text-primary mb-6">About R&R Realty</h2>
+              <p className="text-gray-600 text-lg mb-6 leading-relaxed">
+                Founded in 2008, R&R Realty has been serving the Twin Cities area with dedication and expertise. We specialize exclusively in single-family homes, allowing us to provide focused, knowledgeable service that our clients deserve.
+              </p>
+              <p className="text-gray-600 text-lg mb-6 leading-relaxed">
+                Our team of experienced agents understands that buying or selling a home is one of life's biggest decisions. That's why we're committed to providing personalized service, honest communication, and expert guidance throughout your real estate journey.
+              </p>
+              <div className="grid grid-cols-2 gap-6 mb-8">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-secondary mb-2">500+</div>
+                  <div className="text-gray-600">Homes Sold</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-secondary mb-2">15+</div>
+                  <div className="text-gray-600">Years Experience</div>
+                </div>
+              </div>
+              <Button className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
+                Meet Our Team
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-primary">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold text-white mb-6">Ready to Find Your Dream Home?</h2>
+          <p className="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">
+            Join hundreds of satisfied families who have trusted R&R Realty with their most important investment. Let's make your real estate dreams a reality.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button className="bg-secondary text-white px-8 py-4 text-lg rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
+              Start Home Search
+            </Button>
+            <Button variant="outline" className="bg-white text-primary px-8 py-4 text-lg rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap h-auto">
+              Get Free Home Valuation
+            </Button>
+          </div>
+          <div className="mt-12 grid md:grid-cols-3 gap-8 text-center">
+            <div>
+              <div className="text-4xl font-bold text-secondary mb-2">500+</div>
+              <div className="text-gray-200">Happy Families</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-secondary mb-2">15+</div>
+              <div className="text-gray-200">Years of Excellence</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-secondary mb-2">98%</div>
+              <div className="text-gray-200">Client Satisfaction</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-primary mb-4">Latest Real Estate Insights</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Stay informed with our expert tips, market updates, and home buying guides.
+            </p>
+          </div>
+          <Carousel opts={{ align: "start", loop: true }} className="w-full">
+            <CarouselContent>
+              {blogPosts.map((post) => {
+                const image = PlaceHolderImages.find(p => p.id === post.imageId);
+                return (
+                  <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3">
+                    <div className="p-4">
+                      <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
+                        {image && <div className="h-48 bg-cover bg-center relative">
+                          <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={post.imageHint} />
+                        </div>}
+                        <div className="p-6 flex flex-col flex-grow">
+                          <div className="flex items-center text-sm text-gray-500 mb-3">
+                            <i className="ri-calendar-line mr-2"></i>
+                            <span>{post.date}</span>
+                            <span className="mx-2">•</span>
+                            <span>{post.readTime}</span>
+                          </div>
+                          <h3 className="text-xl font-semibold text-primary mb-3 hover:text-secondary transition-colors cursor-pointer flex-grow">
+                            {post.title}
+                          </h3>
+                          <p className="text-gray-600 mb-4 line-clamp-3">
+                            {post.excerpt}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-secondary font-medium text-sm">{post.category}</span>
+                            <Link href="#" className="text-primary hover:text-secondary transition-colors text-sm font-medium">
+                              Read More <i className="ri-arrow-right-line inline-block"></i>
+                            </Link>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+                  </CarouselItem>
+                )
+              })}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+          </Carousel>
+           <div className="text-center mt-12">
+            <Button asChild className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
+              <Link href="/blog">View All Articles</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-primary mb-4">Get in Touch</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Ready to start your real estate journey? Contact us today for a free consultation.
+            </p>
+          </div>
+          <div className="grid lg:grid-cols-2 gap-12">
+            <div>
+              <form className="space-y-6">
+                <div>
+                  <Label className="block text-gray-700 font-medium mb-2">Full Name</Label>
+                  <Input type="text" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Enter your full name" />
+                </div>
+                <div>
+                  <Label className="block text-gray-700 font-medium mb-2">Email Address</Label>
+                  <Input type="email" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Enter your email address" />
+                </div>
+                <div>
+                  <Label className="block text-gray-700 font-medium mb-2">Phone Number</Label>
+                  <Input type="tel" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Enter your phone number" />
+                </div>
+                <div>
+                  <Label className="block text-gray-700 font-medium mb-2">Message</Label>
+                  <Textarea rows={5} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent resize-none" placeholder="Tell us about your real estate needs" />
+                </div>
+                <Button type="submit" className="w-full bg-secondary text-white py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
+                  Send Message
+                </Button>
+              </form>
+            </div>
+            <div className="h-96 bg-gray-200 rounded-lg overflow-hidden relative">
+              {mapImage && <Image src={mapImage.imageUrl} alt="Map of Minneapolis" fill className="object-cover" data-ai-hint={mapImage.imageHint} />}
+            </div>
+          </div>
+        </div>
+      </section>
+
+       <div className="fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/16125550123?text=Hi%2C%20I%27m%20interested%20in%20your%20real%20estate%20services" target="_blank" className="bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+          <i className="ri-whatsapp-fill text-2xl"></i>
+        </a>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import type { Property, Amenity } from "@/lib/types";
-import { Armchair, Bath, BedDouble, Car, Dumbbell, PawPrint, Waves, Trees, UtensilsCrossed, Wifi, Wind } from "lucide-react";
+import { Armchair, Car, Dumbbell, PawPrint, Waves, Trees, UtensilsCrossed, Wifi, Wind } from "lucide-react";
 
 export const properties: Property[] = [
   {
@@ -9,7 +9,7 @@ export const properties: Property[] = [
     status: "For Sale",
     type: "House",
     location: "Maple Creek, New York",
-    price: 750000,
+    price: 488000,
     bedrooms: 4,
     bathrooms: 3,
     size: 2500,
@@ -25,7 +25,7 @@ export const properties: Property[] = [
     status: "For Rent",
     type: "Apartment",
     location: "Central City, San Francisco",
-    price: 4500,
+    price: 3250,
     bedrooms: 2,
     bathrooms: 2,
     size: 1200,
@@ -41,14 +41,14 @@ export const properties: Property[] = [
     status: "For Sale",
     type: "Condo",
     location: "Greenleaf, Chicago",
-    price: 320000,
+    price: 679000,
     bedrooms: 1,
     bathrooms: 1,
     size: 800,
     amenities: ["Gym", "Pet Friendly", "Balcony"],
     images: ["property-3-ext", "property-3-int-1"],
     agent: { name: "Emily White", avatar: "agent-3" },
-    featured: false,
+    featured: true,
   },
   {
     id: "p4",
@@ -80,7 +80,7 @@ export const properties: Property[] = [
     amenities: ["Garden", "Fireplace", "Hardwood Floors"],
     images: ["property-5-ext", "property-5-int-1"],
     agent: { name: "Jane Doe", avatar: "agent-1" },
-    featured: true,
+    featured: false,
   },
   {
     id: "p6",
@@ -96,7 +96,7 @@ export const properties: Property[] = [
     amenities: ["Pool", "Gym", "24h Security"],
     images: ["property-6-ext", "property-6-int-1"],
     agent: { name: "Emily White", avatar: "agent-3" },
-    featured: true,
+    featured: false,
   },
   {
     id: "p7",
@@ -128,7 +128,7 @@ export const properties: Property[] = [
     amenities: ["Balcony", "Parking", "Gym"],
     images: ["property-8-ext", "property-8-int-1"],
     agent: { name: "Jane Doe", avatar: "agent-1" },
-    featured: true,
+    featured: false,
   },
   {
     id: "p9",
@@ -144,7 +144,7 @@ export const properties: Property[] = [
     amenities: ["Pool", "Beach Access", "Ocean View", "Air Conditioning"],
     images: ["property-9-ext", "property-9-int-1"],
     agent: { name: "Emily White", avatar: "agent-3" },
-    featured: true,
+    featured: false,
   },
   {
     id: "p10",

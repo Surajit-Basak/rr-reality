@@ -3,13 +3,13 @@
     {
       "id": "hero-1",
       "description": "A beautiful modern house with a pool at dusk.",
-      "imageUrl": "https://images.unsplash.com/photo-1513584684374-8bab748fbf90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "modern house"
     },
     {
       "id": "property-1-ext",
       "description": "Exterior of a modern suburban house.",
-      "imageUrl": "https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1570129477492-45c003edd2be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "modern house"
     },
     {
@@ -27,7 +27,7 @@
     {
       "id": "property-2-ext",
       "description": "Exterior of a luxury apartment building.",
-      "imageUrl": "https://images.unsplash.com/photo-1534655610770-dd69616f05ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhcGFydG1lbnQlMjBidWlsZGluZ3xlbnwwfHx8fDE3NjE5Nzc5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "apartment building"
     },
     {
@@ -45,7 +45,7 @@
     {
       "id": "property-3-ext",
       "description": "Exterior of a cozy condo complex.",
-      "imageUrl": "https://images.unsplash.com/photo-1627811732414-45c003f9eeec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb25kbyUyMGJ1aWxkaW5nfGVufDB8fHx8MTc2MTk2MzA4Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "condo building"
     },
     {
@@ -135,25 +135,31 @@
     {
       "id": "agent-1",
       "description": "Portrait of a friendly real estate agent.",
-      "imageUrl": "https://images.unsplash.com/photo-1610655507808-a59293f4e332?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2MTkwOTQyNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2MTkwOTQyNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman portrait"
     },
     {
       "id": "agent-2",
       "description": "Portrait of a professional real estate agent.",
-      "imageUrl": "https://images.unsplash.com/photo-1594672830234-ba4cfe1202dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYxODgxOTU3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjE4ODE5NTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "man portrait"
     },
     {
       "id": "agent-3",
       "description": "Portrait of an experienced real estate agent.",
-      "imageUrl": "https://images.unsplash.com/photo-1570170609489-43197f518df0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cHJvZmVzc2lvbmFsJTIwcGVyc29ufGVufDB8fHx8MTc2MTg1Nzg5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2MTkwOTQyNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "professional person"
+    },
+    {
+      "id": "agent-team",
+      "description": "A professional real estate team.",
+      "imageUrl": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHRlYW18ZW58MHx8fHwxNzYyMDQ0NzE4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business team"
     },
     {
       "id": "map-placeholder",
       "description": "A placeholder image of a map.",
-      "imageUrl": "https://images.unsplash.com/photo-1717343824755-aa0bc935c47c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYXAlMjBjaXR5fGVufDB8fHx8MTc2MTkzODQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1533331649887-b35395045339?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYXAlMjBjaXR5fGVufDB8fHx8MTc2MTkzODQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "map city"
     }
   ]

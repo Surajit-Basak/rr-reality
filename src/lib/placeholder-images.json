@@ -1,3 +1,160 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "A beautiful modern house with a pool at dusk.",
+      "imageUrl": "https://images.unsplash.com/photo-1513584684374-8bab748fbf90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "modern house"
+    },
+    {
+      "id": "property-1-ext",
+      "description": "Exterior of a modern suburban house.",
+      "imageUrl": "https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjE5NDU1ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "modern house"
+    },
+    {
+      "id": "property-1-int-1",
+      "description": "Interior living room of a modern suburban house.",
+      "imageUrl": "https://images.unsplash.com/photo-1618220179428-22790b461013?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsaXZpbmclMjByb29tfGVufDB8fHx8MTc2MTkwNDE0M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "living room"
+    },
+    {
+      "id": "property-1-int-2",
+      "description": "Kitchen of a modern suburban house.",
+      "imageUrl": "https://images.unsplash.com/photo-1556910096-6f5e72db6803?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxraXRjaGVufGVufDB8fHx8MTc2MTk4NDY0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "kitchen"
+    },
+    {
+      "id": "property-2-ext",
+      "description": "Exterior of a luxury apartment building.",
+      "imageUrl": "https://images.unsplash.com/photo-1534655610770-dd69616f05ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhcGFydG1lbnQlMjBidWlsZGluZ3xlbnwwfHx8fDE3NjE5Nzc5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "apartment building"
+    },
+    {
+      "id": "property-2-int-1",
+      "description": "Interior of a luxury apartment.",
+      "imageUrl": "https://images.unsplash.com/photo-1518733057094-95b53143d2a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bHV4dXJ5JTIwYXBhcnRtZW50fGVufDB8fHx8MTc2MTkwMTMyMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "luxury apartment"
+    },
+    {
+      "id": "property-2-int-2",
+      "description": "Balcony view from a luxury apartment.",
+      "imageUrl": "https://images.unsplash.com/photo-1494054457339-2022c634b1ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjaXR5JTIwdmlld3xlbnwwfHx8fDE3NjE5NjMwODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "city view"
+    },
+    {
+      "id": "property-3-ext",
+      "description": "Exterior of a cozy condo complex.",
+      "imageUrl": "https://images.unsplash.com/photo-1627811732414-45c003f9eeec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb25kbyUyMGJ1aWxkaW5nfGVufDB8fHx8MTc2MTk2MzA4Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "condo building"
+    },
+    {
+      "id": "property-3-int-1",
+      "description": "Living area of a cozy condo.",
+      "imageUrl": "https://images.unsplash.com/photo-1632060165606-f0e85b7b7049?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb3p5JTIwbGl2aW5nfGVufDB8fHx8MTc2MTk4NDY0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cozy living"
+    },
+    {
+      "id": "property-4-ext",
+      "description": "Vast empty land for sale.",
+      "imageUrl": "https://images.unsplash.com/photo-1551868130-6d1b5bbc73a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxlbXB0eSUyMGxhbmR8ZW58MHx8fHwxNzYxOTM0NDUzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "empty land"
+    },
+    {
+      "id": "property-5-ext",
+      "description": "A charming brick house with a garden.",
+      "imageUrl": "https://images.unsplash.com/photo-1601041597271-71988152f98b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxicmljayUyMGhvdXNlfGVufDB8fHx8MTc2MTk4NDY0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "brick house"
+    },
+    {
+      "id": "property-5-int-1",
+      "description": "A traditional kitchen in a brick house.",
+      "imageUrl": "https://images.unsplash.com/photo-1673694800551-b84c5e7d2933?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx0cmFkaXRpb25hbCUyMGtpdGNoZW58ZW58MHx8fHwxNzYxOTg0NjQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "traditional kitchen"
+    },
+    {
+      "id": "property-6-ext",
+      "description": "A sleek, modern high-rise apartment building in a city.",
+      "imageUrl": "https://images.unsplash.com/photo-1757688348857-25d9d6972b18?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxoaWdoLXJpc2UlMjBidWlsZGluZ3xlbnwwfHx8fDE3NjE5ODQ2NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "high-rise building"
+    },
+    {
+      "id": "property-6-int-1",
+      "description": "A minimalist apartment interior with a city view.",
+      "imageUrl": "https://images.unsplash.com/photo-1656064158924-e1c129feede7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwYXBhcnRtZW50fGVufDB8fHx8MTc2MTk4NDY0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "minimalist apartment"
+    },
+    {
+      "id": "property-7-ext",
+      "description": "A sprawling ranch-style house.",
+      "imageUrl": "https://images.unsplash.com/photo-1605740710185-d591706c2f38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyYW5jaCUyMGhvdXNlfGVufDB8fHx8MTc2MTk4NDY0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ranch house"
+    },
+    {
+      "id": "property-7-int-1",
+      "description": "A spacious open-plan living area in a ranch house.",
+      "imageUrl": "https://images.unsplash.com/photo-1485846347314-8815b65da905?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvcGVuJTIwbGl2aW5nfGVufDB8fHx8MTc2MTk4NDY0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "open living"
+    },
+    {
+      "id": "property-8-ext",
+      "description": "A multi-story condo building with balconies.",
+      "imageUrl": "https://images.unsplash.com/photo-1735641022567-4cfd550608f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb25kbyUyMGNvbXBsZXh8ZW58MHx8fHwxNzYxOTg0NjQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "condo complex"
+    },
+    {
+      "id": "property-8-int-1",
+      "description": "A compact and modern condo kitchen.",
+      "imageUrl": "https://images.unsplash.com/photo-1628745277862-bc0b2d68c50c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBraXRjaGVufGVufDB8fHx8MTc2MTk3MTE2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "modern kitchen"
+    },
+    {
+      "id": "property-9-ext",
+      "description": "A beautiful beachfront house.",
+      "imageUrl": "https://images.unsplash.com/photo-1617845244696-ab1a363f06b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxiZWFjaGZyb250JTIwaG91c2V8ZW58MHx8fHwxNzYxOTQ1NTg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "beachfront house"
+    },
+    {
+      "id": "property-9-int-1",
+      "description": "A living room with an ocean view.",
+      "imageUrl": "https://images.unsplash.com/photo-1557408645-ba88d51c0825?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvY2VhbiUyMHZpZXd8ZW58MHx8fHwxNzYxOTg0NjQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ocean view"
+    },
+    {
+      "id": "property-10-ext",
+      "description": "A rustic cabin in the woods.",
+      "imageUrl": "https://images.unsplash.com/photo-1740815657509-be007267e3f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxydXN0aWMlMjBjYWJpbnxlbnwwfHx8fDE3NjE5NDMxMjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rustic cabin"
+    },
+    {
+      "id": "property-10-int-1",
+      "description": "A cozy cabin interior with a fireplace.",
+      "imageUrl": "https://images.unsplash.com/photo-1510798831971-661eb04b3739?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb3p5JTIwZmlyZXBsYWNlfGVufDB8fHx8MTc2MTk4MjQwMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cozy fireplace"
+    },
+    {
+      "id": "agent-1",
+      "description": "Portrait of a friendly real estate agent.",
+      "imageUrl": "https://images.unsplash.com/photo-1610655507808-a59293f4e332?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2MTkwOTQyNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "agent-2",
+      "description": "Portrait of a professional real estate agent.",
+      "imageUrl": "https://images.unsplash.com/photo-1594672830234-ba4cfe1202dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYxODgxOTU3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "agent-3",
+      "description": "Portrait of an experienced real estate agent.",
+      "imageUrl": "https://images.unsplash.com/photo-1570170609489-43197f518df0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cHJvZmVzc2lvbmFsJTIwcGVyc29ufGVufDB8fHx8MTc2MTg1Nzg5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "professional person"
+    },
+    {
+      "id": "map-placeholder",
+      "description": "A placeholder image of a map.",
+      "imageUrl": "https://images.unsplash.com/photo-1717343824755-aa0bc935c47c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYXAlMjBjaXR5fGVufDB8fHx8MTc2MTkzODQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "map city"
+    }
+  ]
 }

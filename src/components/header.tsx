@@ -15,13 +15,16 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-20 items-center">
-        <div className="mr-4 hidden md:flex">
+        <div className="mr-auto flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <Building className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold sm:inline-block text-primary">
               R&R Realty
             </span>
           </Link>
+        </div>
+        
+        <div className="hidden md:flex flex-1 items-center justify-center">
           <nav className="flex items-center space-x-6 text-sm font-medium">
             {navLinks.map((link) => (
               <Link
@@ -34,43 +37,42 @@ export function Header() {
             ))}
           </nav>
         </div>
-        <div className="flex flex-1 items-center justify-end space-x-2">
-          <nav className="hidden md:flex items-center">
-            <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
-              <Link href="/contact">
-                Get In Touch
-              </Link>
-            </Button>
-          </nav>
-        </div>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" className="md:hidden">
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle Menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left">
-            <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
-              <Building className="h-6 w-6 text-primary" />
-              <span className="font-bold text-primary">R&R Realty</span>
+
+        <div className="flex items-center justify-end md:flex-1">
+          <Button asChild className="hidden md:flex">
+            <Link href="/contact">
+              Get In Touch
             </Link>
-            <div className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="transition-colors hover:text-foreground/80 text-foreground/60"
-                >
-                  {link.label}
-                </Link>
-              ))}
-                <Button asChild className="mt-4 bg-accent hover:bg-accent/90 text-accent-foreground">
-                    <Link href="/contact">Get In Touch</Link>
-                </Button>
-            </div>
-          </SheetContent>
-        </Sheet>
+          </Button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" className="md:hidden">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
+                <Building className="h-6 w-6 text-primary" />
+                <span className="font-bold text-primary">R&R Realty</span>
+              </Link>
+              <div className="flex flex-col space-y-4">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="transition-colors hover:text-foreground/80 text-foreground/60 text-lg"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                  <Button asChild className="mt-4">
+                      <Link href="/contact">Get In Touch</Link>
+                  </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );

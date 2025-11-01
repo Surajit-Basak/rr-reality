@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PropertyCard } from "@/components/property-card";
 import { properties } from "@/lib/mock-data";
@@ -85,7 +86,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <section className="relative h-screen flex items-center justify-center">
-        <Image src={heroImage?.imageUrl ?? ''} alt="Elegant modern single family home" fill className="object-cover" />
+        {heroImage && <Image src={heroImage?.imageUrl} alt="Elegant modern single family home" fill className="object-cover" />}
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
         <div className="relative z-10 text-center text-white max-w-5xl mx-auto px-6">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
@@ -156,7 +157,7 @@ export default function HomePage() {
             </p>
           </div>
            <Carousel
-            opts={{ align: "start", loop: true }}
+            opts={{ align: "start", loop: true, slidesToScroll: 1 }}
             className="w-full"
           >
             <CarouselContent className="-ml-4">
@@ -234,7 +235,7 @@ export default function HomePage() {
               Hear from families who trusted us with their home buying and selling journey.
             </p>
           </div>
-          <Carousel opts={{ align: "start", loop: true }} className="w-full">
+          <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
             <CarouselContent>
               {testimonials.map((testimonial, index) => {
                 const avatar = PlaceHolderImages.find(p => p.id === testimonial.avatarId);
@@ -340,7 +341,7 @@ export default function HomePage() {
               Stay informed with our expert tips, market updates, and home buying guides.
             </p>
           </div>
-          <Carousel opts={{ align: "start", loop: true }} className="w-full">
+          <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
             <CarouselContent>
               {blogPosts.map((post) => {
                 const image = PlaceHolderImages.find(p => p.id === post.imageId);

@@ -16,8 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, limit } from 'firebase/firestore';
+import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
+import { collection, query, where, limit, serverTimestamp } from 'firebase/firestore';
 import type { Property } from '@/lib/types';
 
 export default function HomePage() {
@@ -52,6 +52,13 @@ export default function HomePage() {
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formState.name && formState.email && formState.message) {
+      const inquiriesCollection = collection(firestore, 'inquiries');
+      addDocumentNonBlocking(inquiriesCollection, {
+        ...formState,
+        propertyId: "general_inquiry", // To distinguish from property-specific inquiries
+        inquiryDate: serverTimestamp()
+      });
+
       toast({
         title: "Message Sent!",
         description: "Thank you for your message! We will contact you soon.",
@@ -180,8 +187,8 @@ export default function HomePage() {
                   ))
                 )}
               </CarouselContent>
-              <CarouselPrevious className="absolute left-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-              <CarouselNext className="absolute right-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+              <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+              <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
             </Carousel>
           </div>
           <div className="text-center mt-12">
@@ -279,8 +286,8 @@ export default function HomePage() {
                   )
                 })}
               </CarouselContent>
-              <CarouselPrevious className="absolute left-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
-              <CarouselNext className="absolute right-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
+              <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
+              <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
             </Carousel>
           </div>
         </div>
@@ -389,8 +396,8 @@ export default function HomePage() {
                   })
                 )}
               </CarouselContent>
-              <CarouselPrevious className="absolute left-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-              <CarouselNext className="absolute right-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+              <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+              <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
             </Carousel>
           </div>
            <div className="text-center mt-12">
@@ -472,3 +479,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    

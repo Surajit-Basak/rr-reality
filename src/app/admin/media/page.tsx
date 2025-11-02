@@ -8,23 +8,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { FilePenLine, UploadCloud } from 'lucide-react';
 import { EditMediaDialog } from './edit-dialog';
-import { useToast } from '@/hooks/use-toast';
+import { UploadMediaDialog } from './upload-dialog'; // Import the new dialog
 
 export default function MediaPage() {
+  // Use state to manage images locally
+  const [images, setImages] = useState<ImagePlaceholder[]>(PlaceHolderImages);
   const [selectedImage, setSelectedImage] = useState<ImagePlaceholder | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { toast } = useToast();
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
   const handleEditClick = (image: ImagePlaceholder) => {
     setSelectedImage(image);
-    setIsDialogOpen(true);
+    setIsEditDialogOpen(true);
   };
-
-  const handleUploadClick = () => {
-    toast({
-      title: "Feature Not Implemented",
-      description: "The media upload functionality has not been built yet.",
-    });
+  
+  const handleAddNewImage = (newImage: ImagePlaceholder) => {
+    setImages(prevImages => [newImage, ...prevImages]);
   };
 
   return (
@@ -35,14 +34,14 @@ export default function MediaPage() {
                 <CardTitle>Media Library</CardTitle>
                 <CardDescription>View and manage your placeholder images.</CardDescription>
             </div>
-            <Button onClick={handleUploadClick}>
+            <Button onClick={() => setIsUploadDialogOpen(true)}>
                 <UploadCloud className="mr-2 h-4 w-4" />
                 Upload New Media
             </Button>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {PlaceHolderImages.map((image) => (
+            {images.map((image) => (
               <div key={image.id} className="group relative aspect-square overflow-hidden rounded-lg">
                 <Image
                   src={image.imageUrl}
@@ -69,10 +68,16 @@ export default function MediaPage() {
       {selectedImage && (
         <EditMediaDialog
           image={selectedImage}
-          isOpen={isDialogOpen}
-          setIsOpen={setIsDialogOpen}
+          isOpen={isEditDialogOpen}
+          setIsOpen={setIsEditDialogOpen}
         />
       )}
+
+      <UploadMediaDialog
+        isOpen={isUploadDialogOpen}
+        setIsOpen={setIsUploadDialogOpen}
+        onImageAdd={handleAddNewImage}
+      />
     </>
   );
 }

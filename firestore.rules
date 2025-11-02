@@ -1,3 +1,4 @@
+
 /**
  * @fileOverview Firestore Security Rules for RR Realty Hub.
  *
@@ -7,6 +8,7 @@
  * Data Structure:
  * - /users/{userId}: Stores user profiles, including their role ('master-admin', 'admin', 'user').
  * - /properties/{propertyId}: Stores property data.
+ * - /property_submissions/{submissionId}: Stores user-submitted properties for admin approval.
  * - /inquiries/{inquiryId}: Stores user inquiries.
  * - /blog_posts/{blogPostId}: Stores blog posts.
  * - /page_content/{pageContentId}: Stores page content.
@@ -16,6 +18,7 @@
  * Key Security Decisions:
  * - Public read access for 'properties', 'blog_posts', 'page_content', 'testimonials'.
  * - Write access to most collections is restricted to users with 'admin' or 'master-admin' roles.
+ * - Public create access for 'inquiries', 'subscribers', and 'property_submissions' to allow user interaction.
  * - Only 'master-admin' can manage the '/users' collection (i.e., assign roles).
  * - Data validation is minimal, focusing on authorization.
  */
@@ -78,6 +81,14 @@ service cloud.firestore {
     }
 
     /**
+     * @description Rules for the /property_submissions/{submissionId} collection.
+     */
+    match /property_submissions/{submissionId} {
+      allow create: if true; // Anyone can submit a property
+      allow read, list, update, delete: if isAdmin(); // Admins can manage submissions
+    }
+
+    /**
      * @description Rules for the /inquiries/{inquiryId} collection.
      */
     match /inquiries/{inquiryId} {
@@ -119,5 +130,3 @@ service cloud.firestore {
     }
   }
 }
-
-    

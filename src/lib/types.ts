@@ -1,4 +1,5 @@
 
+
 export type UserRole = 'master-admin' | 'admin' | 'user';
 
 export type UserProfile = {
@@ -31,6 +32,22 @@ export type Property = {
   createdAt: any; // Using `any` for Firestore serverTimestamp
 };
 
+export type PropertySubmission = {
+  id: string;
+  submitterName: string;
+  submitterEmail: string;
+  title: string;
+  description: string;
+  type: 'House' | 'Apartment' | 'Condo' | 'Land';
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  size: number;
+  location: string;
+  amenities: string[];
+  submittedAt: any;
+}
+
 export type Amenity = {
   id: string;
   label: string;
@@ -56,5 +73,3 @@ export type BlogPost = {
     tags: string[];
     imageUrl: string;
 };
-
-    

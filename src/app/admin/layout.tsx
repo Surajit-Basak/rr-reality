@@ -12,7 +12,7 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
-import { Building, LayoutDashboard, Home, MessageSquare, Newspaper, Settings, LogOut, User } from "lucide-react";
+import { Building, LayoutDashboard, Home, MessageSquare, Newspaper, Settings, LogOut, User, Send } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
@@ -50,6 +50,12 @@ export default function AdminLayout({
                     <SidebarMenuButton href="/admin/properties" tooltip="Properties">
                     <Home />
                     <span>Properties</span>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton href="/admin/submissions" tooltip="Submissions">
+                    <Send />
+                    <span>Submissions</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>

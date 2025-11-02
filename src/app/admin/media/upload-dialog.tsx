@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -9,8 +8,10 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { UploadCloud } from 'lucide-react';
+import { Loader2, UploadCloud } from 'lucide-react';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
+import { useStorage } from '@/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 interface UploadMediaDialogProps {
   isOpen: boolean;
@@ -23,7 +24,9 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
   const [preview, setPreview] = useState<string | null>(null);
   const [altText, setAltText] = useState('');
   const [id, setId] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const storage = useStorage();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -43,41 +46,65 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
       };
       reader.readAsDataURL(selectedFile);
       // Auto-generate an ID from the file name
-      setId(selectedFile.name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/-\.[^.]*$/, ''));
+      setId(selectedFile.name.toLowerCase().replace(/\.[^/.]+$/, "").replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-'));
     }
   };
 
-  const handleSave = () => {
-    if (!file || !preview || !id.trim() || !altText.trim()) {
+  const handleSave = async () => {
+    if (!file || !id.trim() || !altText.trim() || !storage) {
       toast({
         variant: 'destructive',
         title: 'Missing Information',
-        description: 'Please select a file and fill out both the ID and Alt Text fields.',
+        description: 'Please select a file, fill out all fields, and ensure storage is available.',
       });
       return;
     }
     
-    // Create a new image placeholder object. In a real app, the `imageUrl`
-    // would come from a file storage service after uploading. Here we use the local preview URL.
-    const newImage: ImagePlaceholder = {
-      id: id,
-      description: altText,
-      imageUrl: preview,
-      imageHint: "custom upload" // Or derive from alt text
-    };
-    
-    onImageAdd(newImage);
-    toast({
-      title: "Image Added",
-      description: "The new image has been added to your media library for this session.",
-    });
+    setIsUploading(true);
 
-    // Reset state and close dialog
-    setIsOpen(false);
-    setFile(null);
-    setPreview(null);
-    setAltText('');
-    setId('');
+    try {
+      // 1. Upload to Firebase Storage
+      const storageRef = ref(storage, `property-images/${id}-${file.name}`);
+      const uploadResult = await uploadBytes(storageRef, file);
+      
+      // 2. Get the public URL
+      const downloadURL = await getDownloadURL(uploadResult.ref);
+      
+      // 3. Create the new image object
+      const newImage: ImagePlaceholder = {
+        id: id,
+        description: altText,
+        imageUrl: downloadURL,
+        imageHint: "custom upload" // Or derive from alt text
+      };
+      
+      // 4. In a real app, we would now call a server-side function
+      // to update the `placeholder-images.json` file.
+      // For this demo, we'll just add it to the parent's state.
+      onImageAdd(newImage);
+
+      toast({
+        title: "Image Uploaded!",
+        description: "The new image has been saved to Firebase Storage and added to the library.",
+      });
+
+      // Reset state and close dialog
+      setIsOpen(false);
+      setFile(null);
+      setPreview(null);
+      setAltText('');
+      setId('');
+
+    } catch (error) {
+        console.error("Upload error:", error);
+        toast({
+            variant: "destructive",
+            title: "Upload Failed",
+            description: "There was an error uploading your image. Please try again."
+        });
+    } finally {
+        setIsUploading(false);
+    }
   };
 
   return (
@@ -86,7 +113,7 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
         <DialogHeader>
           <DialogTitle>Upload New Media</DialogTitle>
           <DialogDescription>
-            Select an image file and provide details. This will not be permanently saved.
+            Select an image file and provide details. This will be saved to Firebase Storage.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -108,7 +135,7 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
                             <p className="text-xs text-muted-foreground">PNG, JPG, or WEBP (MAX. 2MB)</p>
                         </div>
                     )}
-                    <Input id="image-upload" type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={handleFileChange} />
+                    <Input id="image-upload" type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={handleFileChange} disabled={isUploading} />
                 </label>
             </div>
           </div>
@@ -120,6 +147,7 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
               value={id}
               onChange={(e) => setId(e.target.value)}
               placeholder="e.g., my-new-image"
+              disabled={isUploading}
             />
              <p className="text-sm text-muted-foreground">
               A unique, URL-friendly identifier for this image.
@@ -134,6 +162,7 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
               onChange={(e) => setAltText(e.target.value)}
               rows={3}
               placeholder="A descriptive caption for the image"
+              disabled={isUploading}
             />
              <p className="text-sm text-muted-foreground">
               Describe the image for screen readers and SEO.
@@ -142,11 +171,12 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
 
         </div>
         <DialogFooter>
-          <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>Cancel</Button>
-          <Button type="button" onClick={handleSave}>Add to Library</Button>
+          <Button type="button" variant="secondary" onClick={() => setIsOpen(false)} disabled={isUploading}>Cancel</Button>
+          <Button type="button" onClick={handleSave} disabled={isUploading}>
+            {isUploading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Uploading...</> : 'Add to Library'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
-

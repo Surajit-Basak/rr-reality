@@ -16,6 +16,7 @@ export type Property = {
     avatar: string; // image id
   };
   featured: boolean;
+  createdAt: any; // Using `any` for Firestore serverTimestamp
 };
 
 export type Amenity = {

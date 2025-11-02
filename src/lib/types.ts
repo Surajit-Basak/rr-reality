@@ -1,4 +1,15 @@
 
+export type UserRole = 'master-admin' | 'admin' | 'user';
+
+export type UserProfile = {
+  id: string;
+  uid: string;
+  email: string;
+  displayName: string;
+  role: UserRole;
+  createdAt: any;
+}
+
 export type Property = {
   id: string;
   title: string;
@@ -45,3 +56,5 @@ export type BlogPost = {
     tags: string[];
     imageUrl: string;
 };
+
+    

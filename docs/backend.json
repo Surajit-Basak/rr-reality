@@ -1,5 +1,37 @@
 {
   "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user in the system.",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The user's unique ID from Firebase Authentication."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "role": {
+          "type": "string",
+          "description": "The role of the user, determining their permissions.",
+          "enum": ["master-admin", "admin", "user"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the user was created."
+        }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
     "Property": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Property",
@@ -265,6 +297,22 @@
   "firestore": {
     "structure": [
       {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles including their role.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The user's unique ID."
+            }
+          ]
+        }
+      },
+      {
         "path": "/properties/{propertyId}",
         "definition": {
           "entityName": "Property",
@@ -328,22 +376,6 @@
           ]
         }
       },
-      {
-        "path": "/roles_admin/{userId}",
-        "definition": {
-          "entityName": "user",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Collection used for DBAC. The existence of a document here grants admin privileges. The document itself can be empty.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "User ID of the administrator."
-            }
-          ]
-        }
-      },
        {
         "path": "/subscribers/{subscriberId}",
         "definition": {
@@ -377,6 +409,7 @@
         }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to support the RR Realty Hub application, focusing on properties, inquiries, blog posts, and page content. It prioritizes security, scalability, and ease of debugging based on the core design principles. Authorization Independence is achieved by avoiding hierarchical authorization dependencies and structuring data to facilitate simple and robust security rules. The structure supports secure list operations and maintains the integrity of ownership, timestamps, and denormalized data.\n\n*   **/properties Collection:** Stores property data. Publicly accessible for reading, but write access is restricted to admins. No denormalization is needed as authorization doesn't depend on related data.\n*   **/inquiries Collection:** Stores user inquiries related to properties.  Inquiries are stored in a flat collection to avoid hierarchical dependencies.  Authorization to read is restricted to admins.\n*   **/blog_posts Collection:** Stores blog posts. Publicly readable, with write access restricted to admins.\n*   **/page_content Collection:** Stores content for various pages of the website. Publicly readable, with write access restricted to admins.\n*   **/roles_admin/{uid} Collection:** Used for DBAC. The existence of a document in this collection grants admin privileges.\n*   **/subscribers Collection:** Stores newsletter subscribers. Publicly writable so anyone can sign up, but only admins can read the. \n*   **/testimonials Collection:** Stores client testimonials. Publicly readable, with write access restricted to admins.\n\nThis structure facilitates Authorization Independence by avoiding `get()` calls in security rules. QAPs (Rules are not Filters) are supported by segregating data with different access requirements into separate collections (e.g., properties, inquiries, blog posts, and page content). Admins are managed via a dedicated `/roles_admin/{uid}` collection, enabling simple existence-based rules."
+    "reasoning": "The Firestore data structure is designed to support the RR Realty Hub application, focusing on properties, inquiries, blog posts, and page content. It prioritizes security, scalability, and ease of debugging based on the core design principles. Authorization Independence is achieved by avoiding hierarchical authorization dependencies and structuring data to facilitate simple and robust security rules. The structure supports secure list operations and maintains the integrity of ownership, timestamps, and denormalized data.\n\n*   **/users Collection:** Stores user profiles and their roles. This is critical for role-based access control.\n*   **/properties Collection:** Stores property data. Publicly accessible for reading, but write access is restricted to admins. No denormalization is needed as authorization doesn't depend on related data.\n*   **/inquiries Collection:** Stores user inquiries related to properties.  Inquiries are stored in a flat collection to avoid hierarchical dependencies.  Authorization to read is restricted to admins.\n*   **/blog_posts Collection:** Stores blog posts. Publicly readable, with write access restricted to admins.\n*   **/page_content Collection:** Stores content for various pages of the website. Publicly readable, with write access restricted to admins.\n*   **/subscribers Collection:** Stores newsletter subscribers. Publicly writable so anyone can sign up, but only admins can read the. \n*   **/testimonials Collection:** Stores client testimonials. Publicly readable, with write access restricted to admins.\n\nThis structure facilitates Authorization Independence by avoiding `get()` calls in security rules. QAPs (Rules are not Filters) are supported by segregating data with different access requirements into separate collections (e.g., properties, inquiries, blog posts, and page content). Roles are stored directly on the user document, allowing security rules to check a user's role efficiently."
   }
 }
+    

@@ -46,10 +46,11 @@ const contactFormSchema = z.object({
 const sellFormSchema = z.object({
   submitterName: z.string().min(2, { message: "Your name is required." }),
   submitterEmail: z.string().email({ message: "A valid email is required." }),
-  submitterPhone: z.string().optional(),
+  submitterPhone: z.string().min(10, { message: "A valid phone number is required." }),
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
   description: z.string().min(20, { message: "Description must be at least 20 characters." }),
-  type: z.enum(["House", "Apartment", "Condo", "Land", "Townhouse", "Multi-Family"]),
+  type: z.enum(["House", "Apartment", "Condo", "Land", "Townhouse", "Multi-Family", "Other"]),
+  otherType: z.string().optional(),
   price: z.coerce.number().min(1, { message: "Price must be a positive number." }),
   bedrooms: z.coerce.number().int().min(0),
   bathrooms: z.coerce.number().int().min(1),
@@ -58,7 +59,15 @@ const sellFormSchema = z.object({
   amenities: z.array(z.string()).optional(),
   featuredImage: z.any().optional(),
   galleryImages: z.any().optional(),
-});
+}).refine(data => {
+    if (data.type === 'Other') {
+      return !!data.otherType && data.otherType.length > 2;
+    }
+    return true;
+  }, {
+    message: "Please specify the property type.",
+    path: ["otherType"],
+  });
 
 
 export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }) {
@@ -89,6 +98,8 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
       galleryImages: undefined,
     }
   });
+
+  const propertyType = sellForm.watch("type");
 
 
   async function onContactSubmit(values: z.infer<typeof contactFormSchema>) {
@@ -170,7 +181,7 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                 {/* Submitter Info */}
                 <div className="space-y-4 p-4 border rounded-lg">
                     <h3 className="font-medium text-lg">Your Information</h3>
-                    <div className="space-y-6">
+                     <div className="space-y-6">
                         <FormField control={sellForm.control} name="submitterName" render={({ field }) => (
                             <FormItem><FormLabel>Your Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                         )} />
@@ -179,7 +190,7 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                                 <FormItem><FormLabel>Your Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
                             )} />
                             <FormField control={sellForm.control} name="submitterPhone" render={({ field }) => (
-                                <FormItem><FormLabel>Your Phone (Optional)</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
+                                <FormItem><FormLabel>Your Phone</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
                             )} />
                         </div>
                     </div>
@@ -206,8 +217,14 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                                         <SelectItem value="Land">Land</SelectItem>
                                         <SelectItem value="Townhouse">Townhouse</SelectItem>
                                         <SelectItem value="Multi-Family">Multi-Family</SelectItem>
+                                        <SelectItem value="Other">Other</SelectItem>
                                     </SelectContent></Select><FormMessage /></FormItem>
                         )} />
+                        {propertyType === 'Other' && (
+                            <FormField control={sellForm.control} name="otherType" render={({ field }) => (
+                                <FormItem><FormLabel>Specify Type</FormLabel><FormControl><Input placeholder="e.g., Loft, Studio" {...field} /></FormControl><FormMessage /></FormItem>
+                            )} />
+                        )}
                         <FormField control={sellForm.control} name="price" render={({ field }) => (
                             <FormItem><FormLabel>Asking Price</FormLabel><FormControl><Input type="number" placeholder="e.g., 450000" {...field} /></FormControl><FormMessage /></FormItem>
                         )} />
@@ -254,7 +271,7 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                 {/* Image Uploads */}
                 <div className="space-y-4 p-4 border rounded-lg">
                     <h3 className="font-medium text-lg">Property Photos</h3>
-                     <div className="grid md:grid-cols-2 gap-6">
+                     <div className="space-y-6">
                         <FormField
                         control={sellForm.control}
                         name="featuredImage"
@@ -263,10 +280,10 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                             <FormLabel>Featured Image</FormLabel>
                             <FormControl>
                                 <div className="flex items-center justify-center w-full">
-                                    <label htmlFor="featured-image-upload" className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                    <label htmlFor="featured-image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <UploadCloud className="w-8 h-8 mb-4 text-gray-500" />
-                                            <p className="mb-2 text-sm text-center text-gray-500"><span className="font-semibold">Click to upload</span><br/>or drag and drop</p>
+                                            <UploadCloud className="w-8 h-8 mb-2 text-gray-500" />
+                                            <p className="text-sm text-center text-gray-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
                                         </div>
                                         <Input id="featured-image-upload" type="file" className="hidden" onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : null)} />
                                     </label>
@@ -285,10 +302,10 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                             <FormLabel>Gallery Images</FormLabel>
                             <FormControl>
                                 <div className="flex items-center justify-center w-full">
-                                    <label htmlFor="gallery-images-upload" className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                    <label htmlFor="gallery-images-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <UploadCloud className="w-8 h-8 mb-4 text-gray-500" />
-                                            <p className="mb-2 text-sm text-center text-gray-500"><span className="font-semibold">Upload multiple images</span><br/>for the gallery</p>
+                                            <UploadCloud className="w-8 h-8 mb-2 text-gray-500" />
+                                            <p className="text-sm text-center text-gray-500"><span className="font-semibold">Upload multiple images</span> for the gallery</p>
                                         </div>
                                         <Input id="gallery-images-upload" type="file" multiple className="hidden" onChange={(e) => field.onChange(e.target.files)} />
                                     </label>

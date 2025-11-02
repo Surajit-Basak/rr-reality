@@ -130,7 +130,8 @@
         },
         "title": { "type": "string", "description": "Title of the property listing." },
         "description": { "type": "string", "description": "Detailed description of the property." },
-        "type": { "type": "string", "enum": ["House", "Apartment", "Condo", "Land"] },
+        "type": { "type": "string", "enum": ["House", "Apartment", "Condo", "Land", "Townhouse", "Multi-Family", "Other"] },
+        "otherType": { "type": "string", "description": "Custom property type if 'Other' is selected." },
         "price": { "type": "number", "description": "Asking price for the property." },
         "bedrooms": { "type": "number", "description": "Number of bedrooms." },
         "bathrooms": { "type": "number", "description": "Number of bathrooms." },
@@ -147,6 +148,7 @@
       "required": [
         "submitterName",
         "submitterEmail",
+        "submitterPhone",
         "title",
         "description",
         "type",

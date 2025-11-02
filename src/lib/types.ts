@@ -16,7 +16,8 @@ export type Property = {
   title: string;
   description: string;
   status: 'For Sale' | 'For Rent';
-  type: 'House' | 'Apartment' | 'Condo' | 'Land' | 'Townhouse' | 'Multi-Family';
+  type: 'House' | 'Apartment' | 'Condo' | 'Land' | 'Townhouse' | 'Multi-Family' | 'Other';
+  otherType?: string;
   location: string;
   price: number;
   bedrooms: number;
@@ -36,10 +37,11 @@ export type PropertySubmission = {
   id: string;
   submitterName: string;
   submitterEmail: string;
-  submitterPhone?: string;
+  submitterPhone: string;
   title: string;
   description: string;
-  type: 'House' | 'Apartment' | 'Condo' | 'Land' | 'Townhouse' | 'Multi-Family';
+  type: 'House' | 'Apartment' | 'Condo' | 'Land' | 'Townhouse' | 'Multi-Family' | 'Other';
+  otherType?: string;
   price: number;
   bedrooms: number;
   bathrooms: number;

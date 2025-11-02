@@ -40,10 +40,14 @@ export default function SubmissionsPage() {
     
     // 1. Create a new property document from the submission data
     const propertiesCollection = collection(firestore, 'properties');
+    
+    // If type is 'Other', use the otherType value, otherwise use the type value.
+    const propertyType = submission.type === 'Other' ? submission.otherType || 'Other' : submission.type;
+
     const newPropertyData = {
         title: submission.title,
         description: submission.description,
-        type: submission.type,
+        type: propertyType,
         status: "For Sale" as const,
         price: submission.price,
         bedrooms: submission.bedrooms,

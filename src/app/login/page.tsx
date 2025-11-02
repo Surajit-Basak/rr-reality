@@ -7,12 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useAuth, useFirestore, useUser, addDocumentNonBlocking, setDocumentNonBlocking } from "@/firebase";
+import { useAuth, useFirestore, useUser, setDocumentNonBlocking } from "@/firebase";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useToast } from '@/hooks/use-toast';
 import { doc, getDoc, serverTimestamp } from 'firebase/firestore';
 
-// ONE-TIME SCRIPT: Configuration for the master admin
+// Configuration for the master admin
 const MASTER_ADMIN_EMAIL = "surajitbasak2023@gmail.com";
 const MASTER_ADMIN_PASS = "123456";
 
@@ -26,66 +26,6 @@ export default function LoginPage() {
   const { user, isUserLoading } = useUser();
   const { toast } = useToast();
 
-  // ONE-TIME SCRIPT to create master admin on first load
-  useEffect(() => {
-    const createMasterAdmin = async () => {
-      if (!firestore || !auth) return;
-
-      const setupFlagRef = doc(firestore, "internal_config", "master_admin_setup");
-
-      try {
-        const setupFlag = await getDoc(setupFlagRef);
-        if (setupFlag.exists()) {
-          console.log("Master admin setup already completed. Skipping.");
-          return;
-        }
-
-        console.log("Running master admin setup script...");
-        
-        const userCredential = await createUserWithEmailAndPassword(auth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS);
-        const masterUser = userCredential.user;
-        console.log("Master admin user created in Firebase Auth:", masterUser.uid);
-
-        const profileDocRef = doc(firestore, 'users', masterUser.uid);
-        await setDocumentNonBlocking(profileDocRef, {
-          uid: masterUser.uid,
-          email: masterUser.email,
-          displayName: "Master Admin",
-          role: "master-admin",
-          createdAt: serverTimestamp(),
-        }, {});
-        
-        console.log("Master admin user profile created in Firestore.");
-
-        // Set the flag to prevent this script from running again.
-        await setDocumentNonBlocking(setupFlagRef, { completed: true, completedAt: serverTimestamp() }, {});
-        console.log("Master admin setup flag set. Setup complete.");
-
-        toast({ title: "Setup Complete", description: "Master admin account has been created." });
-
-        // Sign out the newly created user so the login form is ready
-        await auth.signOut();
-
-      } catch (error: any) {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log("Master admin email already exists. Assuming setup is complete and setting flag.");
-           // Set the flag to prevent this script from running again if it failed midway before.
-           await setDocumentNonBlocking(setupFlagRef, { completed: true, completedAt: serverTimestamp() }, {});
-        } else {
-          console.error("Critical error during master admin setup:", error);
-          toast({
-            variant: "destructive",
-            title: "Admin Setup Failed",
-            description: "Could not create the initial master admin account.",
-          });
-        }
-      }
-    };
-
-    createMasterAdmin();
-  }, [firestore, auth, toast]);
-
-
   useEffect(() => {
       if (!isUserLoading && user) {
           router.push('/admin');
@@ -96,7 +36,7 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!auth) {
+    if (!auth || !firestore) {
         toast({
             variant: "destructive",
             title: "Sign In Failed",
@@ -107,20 +47,56 @@ export default function LoginPage() {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // AuthGuard will handle redirect on successful login
+        // Standard sign-in attempt
+        await signInWithEmailAndPassword(auth, email, password);
+        // On success, the useEffect will handle the redirect.
     } catch (error: any) {
-      console.error('Sign in error:', error);
-      let description = "Invalid credentials. Please check your email and password and try again.";
-      if (error.code === 'auth/user-not-found') {
-        description = "No user found with this email address."
-      }
-      toast({
-        variant: "destructive",
-        title: "Sign In Failed",
-        description: description,
-      });
-      setIsLoading(false);
+        // Special "upsert" logic for the master admin
+        if (email === MASTER_ADMIN_EMAIL && error.code === 'auth/user-not-found') {
+            console.log("Master admin not found, attempting to create...");
+            try {
+                // 1. Create the auth user
+                const userCredential = await createUserWithEmailAndPassword(auth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS);
+                const masterUser = userCredential.user;
+
+                // 2. Create the Firestore profile
+                const profileDocRef = doc(firestore, 'users', masterUser.uid);
+                await setDocumentNonBlocking(profileDocRef, {
+                  uid: masterUser.uid,
+                  email: masterUser.email,
+                  displayName: "Master Admin",
+                  role: "master-admin",
+                  createdAt: serverTimestamp(),
+                }, {});
+
+                console.log("Master admin user created successfully.");
+                // The onAuthStateChanged listener will now pick up the new user and redirect.
+                // No need to call signInWithEmailAndPassword again.
+            } catch (creationError: any) {
+                 console.error("Critical error during master admin creation:", creationError);
+                 toast({
+                    variant: "destructive",
+                    title: "Admin Setup Failed",
+                    description: `Could not create the master admin account: ${creationError.message}`,
+                });
+            }
+        } else {
+            // Handle all other generic login errors
+            console.error('Sign in error:', error);
+            let description = "Invalid credentials. Please check your email and password and try again.";
+            if (error.code === 'auth/user-not-found') {
+              description = "No user found with this email address."
+            } else if (error.code === 'auth/invalid-credential') {
+              description = "The password you entered is incorrect. Please try again."
+            }
+            toast({
+              variant: "destructive",
+              title: "Sign In Failed",
+              description: description,
+            });
+        }
+    } finally {
+        setIsLoading(false);
     }
   };
   

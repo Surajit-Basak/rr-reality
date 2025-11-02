@@ -90,27 +90,18 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
             });
             return;
         }
+        
+        const blogPostDoc = doc(firestore, 'blog_posts', params.id);
+        updateDocumentNonBlocking(blogPostDoc, {
+            ...values,
+            updatedAt: serverTimestamp(),
+        });
 
-        try {
-            const blogPostDoc = doc(firestore, 'blog_posts', params.id);
-            await updateDocumentNonBlocking(blogPostDoc, {
-                ...values,
-                updatedAt: serverTimestamp(),
-            });
-
-            toast({
-                title: "Blog Post Updated",
-                description: `The post "${values.title}" has been successfully updated.`,
-            });
-            router.push('/admin/blog');
-        } catch (error) {
-            console.error("Error updating blog post: ", error);
-            toast({
-                variant: "destructive",
-                title: "Submission Error",
-                description: "An error occurred while updating the blog post.",
-            });
-        }
+        toast({
+            title: "Blog Post Updated",
+            description: `The post "${values.title}" has been successfully updated.`,
+        });
+        router.push('/admin/blog');
     }
     
     const availableImages = PlaceHolderImages.filter(p => p.id.startsWith('blog-'));

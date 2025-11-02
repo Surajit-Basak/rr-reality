@@ -21,6 +21,7 @@ import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { UserPlus } from "lucide-react";
 import type { UserRole } from '@/lib/types';
+import { setDocumentNonBlocking } from '@/firebase';
 
 export function AddUserDialog() {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,13 +55,13 @@ export function AddUserDialog() {
 
       // Step 2: Create the user profile document in Firestore
       const userDocRef = doc(firestore, 'users', newUser.uid);
-      await setDoc(userDocRef, {
+      setDocumentNonBlocking(userDocRef, {
         uid: newUser.uid,
         email: newUser.email,
         displayName: displayName,
         role: role,
         createdAt: serverTimestamp(),
-      });
+      }, {});
 
       // Important: Sign the temporary auth instance out so the master admin remains logged in.
       // Note: This is a workaround for client-side user creation. A backend with the Admin SDK is the robust solution.

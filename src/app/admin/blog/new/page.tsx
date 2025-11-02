@@ -94,27 +94,18 @@ export default function NewBlogPostPage() {
             });
             return;
         }
+        
+        const blogPostsCollection = collection(firestore, 'blog_posts');
+        addDocumentNonBlocking(blogPostsCollection, {
+            ...values,
+            publicationDate: serverTimestamp(),
+        });
 
-        try {
-            const blogPostsCollection = collection(firestore, 'blog_posts');
-            await addDocumentNonBlocking(blogPostsCollection, {
-                ...values,
-                publicationDate: serverTimestamp(),
-            });
-
-            toast({
-                title: "Blog Post Created",
-                description: `The post "${values.title}" has been successfully created.`,
-            });
-            router.push('/admin/blog');
-        } catch (error) {
-            console.error("Error creating blog post: ", error);
-            toast({
-                variant: "destructive",
-                title: "Submission Error",
-                description: "An error occurred while creating the blog post.",
-            });
-        }
+        toast({
+            title: "Blog Post Created",
+            description: `The post "${values.title}" has been successfully created.`,
+        });
+        router.push('/admin/blog');
     }
     
     const availableImages = PlaceHolderImages.filter(p => p.id.startsWith('blog-'));

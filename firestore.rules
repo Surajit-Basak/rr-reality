@@ -66,10 +66,12 @@ service cloud.firestore {
     /**
      * @description Rules for the /users/{userId} collection.
      * @path /users/{userId}
-     * @allow (read, list, write): Only master admins can manage users and roles.
+     * @allow get: Users can read their own profile.
+     * @allow (list, create, update, delete): Only master admins can manage other users.
      */
     match /users/{userId} {
-      allow read, list, create, update, delete: if isMasterAdmin();
+      allow get: if isOwner(userId);
+      allow list, create, update, delete: if isMasterAdmin();
     }
     
     /**

@@ -86,7 +86,7 @@ export default function AdminBlogPage() {
                     {post.publicationDate ? new Date(post.publicationDate.toDate()).toLocaleDateString() : 'N/A'}
                    </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 flex-wrap">
                       {post.tags.map(tag => <Badge key={tag} variant="secondary">{tag}</Badge>)}
                     </div>
                   </TableCell>

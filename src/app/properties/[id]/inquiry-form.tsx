@@ -1,8 +1,10 @@
+
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { addDoc, collection, serverTimestamp } from "firebase/firestore"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,6 +19,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { Mail } from "lucide-react"
+import { useFirestore } from "@/firebase"
+import { addDocumentNonBlocking } from "@/firebase/non-blocking-updates"
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -32,6 +36,7 @@ interface InquiryFormProps {
 
 export function InquiryForm({ propertyId, agentName }: InquiryFormProps) {
   const { toast } = useToast()
+  const firestore = useFirestore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,8 +48,25 @@ export function InquiryForm({ propertyId, agentName }: InquiryFormProps) {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values) // In a real app, send this to your backend (e.g., Supabase)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!firestore) {
+        toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "Could not connect to the database.",
+        });
+        return;
+    }
+    
+    const inquiryData = {
+      ...values,
+      propertyId,
+      inquiryDate: serverTimestamp(),
+    };
+    
+    const inquiriesCollection = collection(firestore, 'inquiries');
+    addDocumentNonBlocking(inquiriesCollection, inquiryData);
+    
     toast({
       title: "Inquiry Sent!",
       description: `Thank you for your interest. ${agentName} will contact you shortly.`,

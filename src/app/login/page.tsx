@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth, useFirestore, useUser, setDocumentNonBlocking } from "@/firebase";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useToast } from '@/hooks/use-toast';
-import { doc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, serverTimestamp } from 'firebase/firestore';
 
 // Configuration for the master admin
 const MASTER_ADMIN_EMAIL = "surajitbasak2023@gmail.com";
@@ -32,7 +32,7 @@ export default function LoginPage() {
       }
   }, [isUserLoading, user, router]);
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -46,58 +46,51 @@ export default function LoginPage() {
         return;
     }
 
-    try {
-        // Standard sign-in attempt
-        await signInWithEmailAndPassword(auth, email, password);
-        // On success, the useEffect will handle the redirect.
-    } catch (error: any) {
-        // Special "upsert" logic for the master admin
-        if (email === MASTER_ADMIN_EMAIL && error.code === 'auth/user-not-found') {
-            console.log("Master admin not found, attempting to create...");
-            try {
-                // 1. Create the auth user
-                const userCredential = await createUserWithEmailAndPassword(auth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS);
+    // Use a non-blocking sign-in attempt.
+    // The onAuthStateChanged listener in the useUser hook will handle success.
+    signInWithEmailAndPassword(auth, email, password)
+      .catch((error: any) => {
+        let description = "An unknown error occurred. Please try again.";
+        
+        if (error.code === 'auth/user-not-found') {
+          // If master admin email is used and user is not found, create it.
+          if (email === MASTER_ADMIN_EMAIL) {
+            createUserWithEmailAndPassword(auth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS)
+              .then(userCredential => {
                 const masterUser = userCredential.user;
-
-                // 2. Create the Firestore profile
                 const profileDocRef = doc(firestore, 'users', masterUser.uid);
-                await setDocumentNonBlocking(profileDocRef, {
+                setDocumentNonBlocking(profileDocRef, {
                   uid: masterUser.uid,
                   email: masterUser.email,
                   displayName: "Master Admin",
                   role: "master-admin",
                   createdAt: serverTimestamp(),
                 }, {});
-
-                console.log("Master admin user created successfully.");
-                // The onAuthStateChanged listener will now pick up the new user and redirect.
-                // No need to call signInWithEmailAndPassword again.
-            } catch (creationError: any) {
-                 console.error("Critical error during master admin creation:", creationError);
-                 toast({
-                    variant: "destructive",
-                    title: "Admin Setup Failed",
-                    description: `Could not create the master admin account: ${creationError.message}`,
+                // Successful creation will trigger onAuthStateChanged and redirect.
+              })
+              .catch(creationError => {
+                toast({
+                  variant: "destructive",
+                  title: "Admin Setup Failed",
+                  description: `Could not create the master admin account: ${creationError.message}`,
                 });
-            }
-        } else {
-            // Handle all other generic login errors
-            console.error('Sign in error:', error);
-            let description = "Invalid credentials. Please check your email and password and try again.";
-            if (error.code === 'auth/user-not-found') {
-              description = "No user found with this email address."
-            } else if (error.code === 'auth/invalid-credential') {
-              description = "The password you entered is incorrect. Please try again."
-            }
-            toast({
-              variant: "destructive",
-              title: "Sign In Failed",
-              description: description,
-            });
+              });
+            return; // Exit after attempting creation
+          }
+          description = "No user found with this email address.";
+        } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+          description = "The email or password you entered is incorrect. Please try again.";
         }
-    } finally {
+
+        toast({
+          variant: "destructive",
+          title: "Sign In Failed",
+          description: description,
+        });
+      })
+      .finally(() => {
         setIsLoading(false);
-    }
+      });
   };
   
   if (isUserLoading || user) {

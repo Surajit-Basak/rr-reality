@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, limit } from 'firebase/firestore';
 import type { Property } from '@/lib/types';
 
@@ -29,12 +29,18 @@ export default function HomePage() {
   const [formState, setFormState] = useState({ name: '', email: '', phone: '', message: '' });
 
   const firestore = useFirestore();
-  const propertiesCollection = collection(firestore, 'properties');
   
-  const featuredPropertiesQuery = query(propertiesCollection, where("featured", "==", true));
+  const featuredPropertiesQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    const propertiesCollection = collection(firestore, 'properties');
+    return query(propertiesCollection, where("featured", "==", true));
+  }, [firestore]);
   const { data: featuredProperties, isLoading: featuredLoading } = useCollection<Property>(featuredPropertiesQuery);
 
-  const blogPostsQuery = query(collection(firestore, "blog_posts"), limit(4));
+  const blogPostsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, "blog_posts"), limit(4));
+  }, [firestore]);
   const { data: blogPosts, isLoading: blogLoading } = useCollection(blogPostsQuery);
 
 
@@ -147,31 +153,37 @@ export default function HomePage() {
       </section>
 
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-primary mb-4">Featured Properties</h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Discover our handpicked selection of premium single-family homes available in prime locations.
             </p>
           </div>
-           <Carousel
-            opts={{ align: "start", loop: true, slidesToScroll: 1 }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-4">
-              {featuredLoading ? (
-                <p>Loading...</p>
-              ) : (
-                featuredProperties?.map((property) => (
-                  <CarouselItem key={property.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                    <PropertyCard property={property} />
-                  </CarouselItem>
-                ))
-              )}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-            <CarouselNext className="absolute right-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-          </Carousel>
+          <div className="relative px-12">
+            <Carousel
+              opts={{ align: "start", loop: true, slidesToScroll: 1 }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-4">
+                {featuredLoading ? (
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                      <div className="p-4"><div className="w-full h-96 bg-muted rounded-lg animate-pulse"></div></div>
+                    </CarouselItem>
+                  ))
+                ) : (
+                  featuredProperties?.map((property) => (
+                    <CarouselItem key={property.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                      <PropertyCard property={property} />
+                    </CarouselItem>
+                  ))
+                )}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+              <CarouselNext className="absolute right-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            </Carousel>
+          </div>
           <div className="text-center mt-12">
             <Button asChild className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
               <Link href="/properties">View All Properties</Link>
@@ -181,7 +193,7 @@ export default function HomePage() {
       </section>
 
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-primary mb-4">Why Choose R&R Realty</h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -229,53 +241,55 @@ export default function HomePage() {
         </div>
       </section>
       
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-primary mb-4">What Our Clients Say</h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Hear from families who trusted us with their home buying and selling journey.
             </p>
           </div>
-          <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
-            <CarouselContent className="-ml-4">
-              {testimonials.map((testimonial, index) => {
-                const avatar = PlaceHolderImages.find(p => p.id === testimonial.avatarId);
-                const initials = testimonial.name.split(' ').map(n => n[0]).join('');
-                return (
-                  <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                    <div className="p-4 h-full">
-                      <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow h-full flex flex-col">
-                        <div className="flex items-center mb-4 text-yellow-400">
-                          {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-                        </div>
-                        <p className="text-gray-600 mb-6 italic flex-grow">"{testimonial.text}"</p>
-                        <div className="flex items-center">
-                          <Avatar className="w-12 h-12 mr-4 bg-secondary/20">
-                            {avatar && <AvatarImage src={avatar.imageUrl} alt={testimonial.name} />}
-                            <AvatarFallback className="text-secondary font-semibold bg-transparent">{initials}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-semibold text-primary">{testimonial.name}</div>
-                            <div className="text-gray-600 text-sm">{testimonial.location}</div>
+          <div className="relative px-12">
+            <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
+              <CarouselContent className="-ml-4">
+                {testimonials.map((testimonial, index) => {
+                  const avatar = PlaceHolderImages.find(p => p.id === testimonial.avatarId);
+                  const initials = testimonial.name.split(' ').map(n => n[0]).join('');
+                  return (
+                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                      <div className="p-4 h-full">
+                        <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow h-full flex flex-col">
+                          <div className="flex items-center mb-4 text-yellow-400">
+                            {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                          </div>
+                          <p className="text-gray-600 mb-6 italic flex-grow">"{testimonial.text}"</p>
+                          <div className="flex items-center">
+                            <Avatar className="w-12 h-12 mr-4 bg-secondary/20">
+                              {avatar && <AvatarImage src={avatar.imageUrl} alt={testimonial.name} />}
+                              <AvatarFallback className="text-secondary font-semibold bg-transparent">{initials}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-semibold text-primary">{testimonial.name}</div>
+                              <div className="text-gray-600 text-sm">{testimonial.location}</div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </CarouselItem>
-                )
-              })}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
-            <CarouselNext className="absolute right-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
-          </Carousel>
+                    </CarouselItem>
+                  )
+                })}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
+              <CarouselNext className="absolute right-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
+            </Carousel>
+          </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="h-96 relative rounded-lg overflow-hidden">
+            <div className="h-96 relative rounded-lg overflow-hidden shadow-lg">
                {aboutImage && <Image src={aboutImage.imageUrl} alt="R&R Realty Team" fill className="object-cover" data-ai-hint={aboutImage.imageHint} />}
             </div>
             <div>
@@ -305,7 +319,7 @@ export default function HomePage() {
       </section>
 
       <section className="py-20 bg-primary">
-        <div className="max-w-7xl mx-auto px-6 text-center">
+        <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold text-white mb-6">Ready to Find Your Dream Home?</h2>
           <p className="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">
             Join hundreds of satisfied families who have trusted R&R Realty with their most important investment. Let's make your real estate dreams a reality.
@@ -318,75 +332,67 @@ export default function HomePage() {
               Get Free Home Valuation
             </Button>
           </div>
-          <div className="mt-12 grid md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold text-secondary mb-2">500+</div>
-              <div className="text-gray-200">Happy Families</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-secondary mb-2">15+</div>
-              <div className="text-gray-200">Years of Excellence</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-secondary mb-2">98%</div>
-              <div className="text-gray-200">Client Satisfaction</div>
-            </div>
-          </div>
         </div>
       </section>
 
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-primary mb-4">Latest Real Estate Insights</h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Stay informed with our expert tips, market updates, and home buying guides.
             </p>
           </div>
-          <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
-            <CarouselContent className="-ml-4">
-              {blogLoading ? (
-                <p>Loading...</p>
-              ) : (
-                blogPosts?.map((post: any) => {
-                  const image = PlaceHolderImages.find(p => p.id === post.imageUrl);
-                  return (
-                    <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                      <div className="p-4">
-                        <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
-                          {image && <div className="h-48 bg-cover bg-center relative">
-                            <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />
-                          </div>}
-                          <div className="p-6 flex flex-col flex-grow">
-                            <div className="flex items-center text-sm text-gray-500 mb-3">
-                              <i className="ri-calendar-line mr-2"></i>
-                              <span>{new Date(post.publicationDate).toLocaleDateString()}</span>
-                              <span className="mx-2">•</span>
-                              <span>{post.readTime || '5 min read'}</span>
-                            </div>
-                            <h3 className="text-xl font-semibold text-primary mb-3 hover:text-secondary transition-colors cursor-pointer flex-grow">
-                              {post.title}
-                            </h3>
-                            <p className="text-gray-600 mb-4 line-clamp-3">
-                              {post.content.substring(0, 100)}...
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-secondary font-medium text-sm">{post.tags.join(', ')}</span>
-                              <Link href="#" className="text-primary hover:text-secondary transition-colors text-sm font-medium">
-                                Read More <i className="ri-arrow-right-line inline-block"></i>
-                              </Link>
-                            </div>
-                          </div>
-                        </article>
-                      </div>
+          <div className="relative px-12">
+            <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
+              <CarouselContent className="-ml-4">
+                {blogLoading ? (
+                  Array.from({ length: 4 }).map((_, index) => (
+                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                      <div className="p-4"><div className="w-full h-96 bg-white rounded-lg animate-pulse"></div></div>
                     </CarouselItem>
-                  )
-                })
-              )}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-            <CarouselNext className="absolute right-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-          </Carousel>
+                  ))
+                ) : (
+                  blogPosts?.map((post: any) => {
+                    const image = PlaceHolderImages.find(p => p.id === post.imageUrl);
+                    return (
+                      <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                        <div className="p-4">
+                          <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
+                            {image && <div className="h-48 bg-cover bg-center relative">
+                              <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />
+                            </div>}
+                            <div className="p-6 flex flex-col flex-grow">
+                              <div className="flex items-center text-sm text-gray-500 mb-3">
+                                <i className="ri-calendar-line mr-2"></i>
+                                <span>{new Date(post.publicationDate).toLocaleDateString()}</span>
+                                <span className="mx-2">•</span>
+                                <span>{post.readTime || '5 min read'}</span>
+                              </div>
+                              <h3 className="text-xl font-semibold text-primary mb-3 hover:text-secondary transition-colors cursor-pointer flex-grow">
+                                {post.title}
+                              </h3>
+                              <p className="text-gray-600 mb-4 line-clamp-3">
+                                {post.content.substring(0, 100)}...
+                              </p>
+                              <div className="flex items-center justify-between mt-auto">
+                                <span className="text-secondary font-medium text-sm">{post.tags.join(', ')}</span>
+                                <Link href="#" className="text-primary hover:text-secondary transition-colors text-sm font-medium">
+                                  Read More <i className="ri-arrow-right-line inline-block"></i>
+                                </Link>
+                              </div>
+                            </div>
+                          </article>
+                        </div>
+                      </CarouselItem>
+                    )
+                  })
+                )}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+              <CarouselNext className="absolute right-[-1rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            </Carousel>
+          </div>
            <div className="text-center mt-12">
             <Button asChild className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
               <Link href="/blog">View All Articles</Link>
@@ -396,7 +402,7 @@ export default function HomePage() {
       </section>
 
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-primary mb-4">Get in Touch</h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -451,7 +457,7 @@ export default function HomePage() {
                 </Button>
               </form>
             </div>
-            <div className="h-96 bg-gray-200 rounded-lg overflow-hidden relative">
+            <div className="h-96 bg-gray-200 rounded-lg overflow-hidden relative shadow-lg">
               {mapImage && <Image src={mapImage.imageUrl} alt="Map of Minneapolis" fill className="object-cover" data-ai-hint={mapImage.imageHint} />}
             </div>
           </div>

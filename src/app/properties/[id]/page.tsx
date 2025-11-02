@@ -3,7 +3,7 @@
 
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { useDoc, useFirestore } from "@/firebase";
+import { useDoc, useFirestore, useMemoFirebase } from "@/firebase";
 import { doc } from "firebase/firestore";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +23,11 @@ type Props = {
 
 export default function PropertyDetailPage({ params }: Props) {
   const firestore = useFirestore();
-  const propertyRef = doc(firestore, 'properties', params.id);
+  const propertyRef = useMemoFirebase(() => {
+    if (!firestore || !params.id) return null;
+    return doc(firestore, 'properties', params.id);
+  }, [firestore, params.id]);
+
   const { data: property, isLoading } = useDoc<Property>(propertyRef);
 
   if (isLoading) {

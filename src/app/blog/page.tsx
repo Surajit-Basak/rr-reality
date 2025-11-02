@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from "next/link";
@@ -7,7 +8,7 @@ import { collection, query, orderBy } from "firebase/firestore";
 import type { BlogPost } from "@/lib/types";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Metadata } from "next";
+import { Badge } from "@/components/ui/badge";
 
 export default function BlogListPage() {
   const firestore = useFirestore();
@@ -47,24 +48,22 @@ export default function BlogListPage() {
               const image = PlaceHolderImages.find(p => p.id === post.imageUrl);
               return (
                 <article key={post.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
-                  <Link href={`/blog/${post.id}`}>
-                    <div className="relative h-48 w-full">
+                  <Link href={`/blog/${post.id}`} className="block relative h-48 w-full">
                       {image && <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />}
-                    </div>
                   </Link>
                   <div className="p-6 flex flex-col flex-grow">
-                    <div className="mb-3">
-                      {post.tags.slice(0, 2).map(tag => (
-                        <span key={tag} className="text-sm text-secondary font-medium mr-2">{tag}</span>
+                    <div className="mb-2">
+                       {post.tags.slice(0, 2).map(tag => (
+                        <Badge key={tag} variant="secondary" className="mr-2">{tag}</Badge>
                       ))}
                     </div>
                     <h2 className="text-xl font-semibold text-primary mb-3 flex-grow">
                       <Link href={`/blog/${post.id}`} className="hover:text-secondary transition-colors">{post.title}</Link>
                     </h2>
-                    <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
+                    <p className="text-muted-foreground text-sm line-clamp-3 mb-4 flex-grow">
                         {post.content}
                     </p>
-                    <div className="flex items-center text-sm text-muted-foreground pt-4 border-t border-gray-100">
+                    <div className="flex items-center text-sm text-muted-foreground pt-4 border-t border-gray-100 mt-auto">
                       <span>By {post.author}</span>
                       <span className="mx-2">•</span>
                       <span>{post.publicationDate ? new Date(post.publicationDate.toDate()).toLocaleDateString() : 'N/A'}</span>
@@ -74,7 +73,7 @@ export default function BlogListPage() {
               );
             })
           ) : (
-            <p className="col-span-full text-center text-muted-foreground">No blog posts found.</p>
+            <p className="col-span-full text-center text-muted-foreground py-20">No blog posts found.</p>
           )}
         </div>
       </div>

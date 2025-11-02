@@ -1,3 +1,4 @@
+
 'use client';
 
 import { notFound } from "next/navigation";
@@ -31,11 +32,14 @@ export default function BlogPostPage({ params }: Props) {
       <div className="container mx-auto px-4 md:px-6 py-12 max-w-4xl">
         <Skeleton className="h-10 w-3/4 mx-auto mb-4" />
         <Skeleton className="h-6 w-1/2 mx-auto mb-8" />
-        <Skeleton className="h-96 w-full rounded-lg mb-8" />
-        <div className="space-y-4">
+        <Skeleton className="h-[50vh] w-full rounded-lg mb-8" />
+        <div className="space-y-4 prose prose-lg max-w-none mx-auto">
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-3/4" />
         </div>
       </div>
     );
@@ -60,7 +64,7 @@ export default function BlogPostPage({ params }: Props) {
                 </div>
                 <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
-                    <time dateTime={post.publicationDate.toDate().toISOString()}>
+                    <time dateTime={post.publicationDate ? post.publicationDate.toDate().toISOString() : undefined}>
                         {post.publicationDate ? new Date(post.publicationDate.toDate()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                     </time>
                 </div>
@@ -73,16 +77,17 @@ export default function BlogPostPage({ params }: Props) {
           </header>
 
           {image && (
-            <div className="relative h-96 w-full rounded-lg overflow-hidden mb-8 shadow-lg">
+            <div className="relative h-[50vh] w-full rounded-lg overflow-hidden mb-12 shadow-lg">
               <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />
             </div>
           )}
           
-          <div className="prose prose-lg max-w-none text-muted-foreground leading-relaxed">
-            {/* Using a simple div and whitespace style to render paragraphs from the content */}
-            <div style={{ whiteSpace: 'pre-line' }}>
-              {post.content}
-            </div>
+          {/* Using a simple div and whitespace style to render paragraphs from the content */}
+          <div 
+            className="prose prose-lg max-w-none text-muted-foreground leading-relaxed"
+            style={{ whiteSpace: 'pre-line' }}
+          >
+            {post.content}
           </div>
           
            <div className="mt-12 text-center">

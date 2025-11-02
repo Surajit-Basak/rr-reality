@@ -1,0 +1,9 @@
+
+[
+  {
+    "origin": ["http://localhost:9002", "https://*.cloudworkstations.dev", "https://*.firebasepp.com"],
+    "method": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    "header": ["*"],
+    "maxAgeSeconds": 3600
+  }
+]

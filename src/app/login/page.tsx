@@ -7,10 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useAuth, useFirestore, useUser, setDocumentNonBlocking } from "@/firebase";
+import { useAuth, useFirestore, useUser } from "@/firebase";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useToast } from '@/hooks/use-toast';
-import { doc, serverTimestamp, getDoc, setDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 const MASTER_ADMIN_EMAIL = "surajitbasak2023@gmail.com";
 const MASTER_ADMIN_PASS = "123456";
@@ -47,10 +47,9 @@ export default function LoginPage() {
     }
 
     try {
-      // Step 1: Attempt to sign in the user.
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-      // Step 2: If sign-in is successful AND it's the master admin, ensure the profile exists.
+      // If sign-in is successful AND it's the master admin, ensure the profile exists.
       // This is a robust "upsert" that guarantees the role is correctly set in Firestore.
       if (email === MASTER_ADMIN_EMAIL) {
         const userDocRef = doc(firestore, 'users', userCredential.user.uid);
@@ -63,18 +62,15 @@ export default function LoginPage() {
         }, { merge: true }); // Using merge to create or update.
       }
       
-      // On success, the useEffect will redirect, but we can also push directly.
       router.push('/admin');
 
     } catch (error: any) {
-      // Step 3: Handle errors, including creating the master admin if they don't exist.
+      // If it's the master admin and the user doesn't exist, create it.
       if (email === MASTER_ADMIN_EMAIL && error.code === 'auth/user-not-found') {
-        // This block runs ONLY if it's the master admin's first-ever login.
         try {
           const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
           const masterUser = newUserCredential.user;
           
-          // Create the Firestore document with the 'master-admin' role.
           const userDocRef = doc(firestore, 'users', masterUser.uid);
           await setDoc(userDocRef, {
             uid: masterUser.uid,
@@ -89,7 +85,6 @@ export default function LoginPage() {
             description: "Welcome! Your master admin account has been set up.",
           });
 
-          // Redirect after successful creation and login.
           router.push('/admin');
 
         } catch (creationError: any) {
@@ -100,9 +95,8 @@ export default function LoginPage() {
           });
         }
       } else {
-        // Handle standard login errors for all other users.
         let description = "An unknown error occurred. Please try again.";
-        if (error.code === 'auth/invalid-credential') {
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
           description = "The email or password you entered is incorrect.";
         }
         toast({
@@ -116,8 +110,7 @@ export default function LoginPage() {
     }
   };
 
-  // Display a loading state while checking auth status or if a login is in progress.
-  if (isUserLoading || isLoading) {
+  if (isUserLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p>Loading...</p>
@@ -125,7 +118,6 @@ export default function LoginPage() {
     );
   }
   
-  // Don't render the login form if the user is already logged in.
   if (user) {
     return (
         <div className="flex items-center justify-center min-h-screen">

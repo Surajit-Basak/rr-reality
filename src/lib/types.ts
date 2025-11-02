@@ -39,7 +39,9 @@ export type BlogPost = {
     title: string;
     content: string;
     author: string;
-    publicationDate: any; // Using `any` for Firestore serverTimestamp
+    publicationDate: {
+      toDate: () => Date;
+    }; // Using `any` for Firestore serverTimestamp
     tags: string[];
     imageUrl: string;
 };

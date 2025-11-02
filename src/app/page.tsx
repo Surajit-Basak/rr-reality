@@ -17,8 +17,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
-import { collection, query, where, limit, serverTimestamp } from 'firebase/firestore';
-import type { Property, Testimonial } from '@/lib/types';
+import { collection, query, where, limit, serverTimestamp, orderBy } from 'firebase/firestore';
+import type { Property, Testimonial, BlogPost } from '@/lib/types';
 
 export default function HomePage() {
   const { toast } = useToast();
@@ -39,9 +39,9 @@ export default function HomePage() {
 
   const blogPostsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, "blog_posts"), limit(4));
+    return query(collection(firestore, "blog_posts"), orderBy('publicationDate', 'desc'), limit(4));
   }, [firestore]);
-  const { data: blogPosts, isLoading: blogLoading } = useCollection(blogPostsQuery);
+  const { data: blogPosts, isLoading: blogLoading } = useCollection<BlogPost>(blogPostsQuery);
 
   const testimonialsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -353,31 +353,35 @@ export default function HomePage() {
                     </CarouselItem>
                   ))
                 ) : (
-                  blogPosts?.map((post: any) => {
+                  blogPosts?.map((post: BlogPost) => {
                     const image = PlaceHolderImages.find(p => p.id === post.imageUrl);
                     return (
                       <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
                         <div className="p-4">
                           <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
-                            {image && <div className="h-48 bg-cover bg-center relative">
+                            {image && <Link href={`/blog/${post.id}`} className="block h-48 bg-cover bg-center relative">
                               <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />
-                            </div>}
+                            </Link>}
                             <div className="p-6 flex flex-col flex-grow">
                               <div className="flex items-center text-sm text-gray-500 mb-3">
                                 <i className="ri-calendar-line mr-2"></i>
-                                <span>{new Date(post.publicationDate).toLocaleDateString()}</span>
+                                <span>{post.publicationDate ? new Date(post.publicationDate.toDate()).toLocaleDateString() : 'N/A'}</span>
                                 <span className="mx-2">•</span>
-                                <span>{post.readTime || '5 min read'}</span>
+                                <span>5 min read</span>
                               </div>
                               <h3 className="text-xl font-semibold text-primary mb-3 hover:text-secondary transition-colors cursor-pointer flex-grow">
-                                {post.title}
+                                <Link href={`/blog/${post.id}`}>{post.title}</Link>
                               </h3>
                               <p className="text-gray-600 mb-4 line-clamp-3">
                                 {post.content.substring(0, 100)}...
                               </p>
                               <div className="flex items-center justify-between mt-auto">
-                                <span className="text-secondary font-medium text-sm">{post.tags.join(', ')}</span>
-                                <Link href="#" className="text-primary hover:text-secondary transition-colors text-sm font-medium">
+                                <div className="flex gap-1">
+                                {post.tags.slice(0,2).map(tag => (
+                                    <span key={tag} className="text-secondary font-medium text-sm">{tag}</span>
+                                ))}
+                                </div>
+                                <Link href={`/blog/${post.id}`} className="text-primary hover:text-secondary transition-colors text-sm font-medium">
                                   Read More <i className="ri-arrow-right-line inline-block"></i>
                                 </Link>
                               </div>

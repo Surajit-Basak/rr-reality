@@ -45,6 +45,7 @@ export type PropertySubmission = {
   size: number;
   location: string;
   amenities: string[];
+  images: string[];
   submittedAt: any;
 }
 

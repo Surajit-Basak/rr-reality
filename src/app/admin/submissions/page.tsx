@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useCollection, useFirestore, useMemoFirebase, deleteDocumentNonBlocking, addDocumentNonBlocking } from "@/firebase";
@@ -51,7 +52,7 @@ export default function SubmissionsPage() {
         size: submission.size,
         location: submission.location,
         amenities: submission.amenities,
-        images: [], // Admin needs to add images
+        images: submission.images || [], // Admin needs to add images
         featured: false,
         agent: { // Assign a default agent
             name: "Jane Doe",

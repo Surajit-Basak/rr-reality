@@ -133,6 +133,7 @@
         "size": { "type": "number", "description": "Size in square feet." },
         "location": { "type": "string", "description": "Address or location of the property." },
         "amenities": { "type": "array", "items": { "type": "string" } },
+        "images": { "type": "array", "items": { "type": "string" }, "description": "Array of image IDs from placeholder images." },
         "submittedAt": {
           "type": "string",
           "format": "date-time",
@@ -150,7 +151,8 @@
         "bathrooms",
         "size",
         "location",
-        "submittedAt"
+        "submittedAt",
+        "images"
       ]
     },
     "Inquiry": {

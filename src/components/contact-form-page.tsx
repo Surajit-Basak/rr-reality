@@ -55,6 +55,7 @@ const sellFormSchema = z.object({
   size: z.coerce.number().int().min(100, { message: "Size must be at least 100 sqft." }),
   location: z.string().min(5, { message: "Location is required." }),
   amenities: z.array(z.string()).optional(),
+  images: z.array(z.string()).min(1, { message: "Please select at least one image." }),
 });
 
 
@@ -81,6 +82,7 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
       size: 1500,
       location: "",
       amenities: [],
+      images: [],
     }
   });
 
@@ -121,6 +123,8 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
     : "Have questions or ready to start your real estate journey? Contact our team today for a free, no-obligation consultation.";
 
   const heroImage = PlaceHolderImages.find(p => p.id === (isSellPage ? 'property-2-ext' : 'agent-team'));
+  const availableImages = PlaceHolderImages.filter(p => p.id.startsWith('property-'));
+
 
   const renderContactForm = () => (
      <div className="lg:col-span-3 bg-white p-8 rounded-lg shadow-lg">
@@ -220,6 +224,49 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                         <FormMessage />
                     </FormItem>
                 )} />
+
+                <FormField
+                    control={sellForm.control}
+                    name="images"
+                    render={() => (
+                        <FormItem>
+                        <div className="mb-4">
+                            <FormLabel className="text-base">Property Images</FormLabel>
+                            <FormDescription>Select images for the property gallery. The first selected image will be the main image.</FormDescription>
+                        </div>
+                        <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
+                            {availableImages.map((image) => (
+                            <FormField
+                                key={image.id}
+                                control={sellForm.control}
+                                name="images"
+                                render={({ field }) => {
+                                return (
+                                    <FormItem key={image.id} className="relative aspect-square">
+                                        <FormControl>
+                                            <Checkbox
+                                                className="absolute top-2 right-2 z-10 h-5 w-5 bg-background"
+                                                checked={field.value?.includes(image.id)}
+                                                onCheckedChange={(checked) => {
+                                                    return checked
+                                                    ? field.onChange([...(field.value || []), image.id])
+                                                    : field.onChange(
+                                                        field.value?.filter((value) => value !== image.id)
+                                                    )
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <img src={image.imageUrl} alt={image.description} className="w-full h-full object-cover rounded-md" />
+                                    </FormItem>
+                                )
+                                }}
+                            />
+                            ))}
+                        </div>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
 
                 <Button type="submit" disabled={sellForm.formState.isSubmitting} className="w-full bg-secondary text-white py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto text-base">
                     {sellForm.formState.isSubmitting ? "Submitting..." : "Submit for Approval"}

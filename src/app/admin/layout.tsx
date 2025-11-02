@@ -41,45 +41,59 @@ export default function AdminLayout({
             <SidebarContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/admin" tooltip="Dashboard">
-                    <LayoutDashboard />
-                    <span>Dashboard</span>
+                  <SidebarMenuButton asChild tooltip="Dashboard">
+                    <Link href="/admin">
+                      <LayoutDashboard />
+                      <span>Dashboard</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/admin/properties" tooltip="Properties">
-                    <Home />
-                    <span>Properties</span>
+                  <SidebarMenuButton asChild tooltip="Properties">
+                    <Link href="/admin/properties">
+                      <Home />
+                      <span>Properties</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
-                  <SidebarMenuButton href="/admin/submissions" tooltip="Submissions">
-                    <Send />
-                    <span>Submissions</span>
+                  <SidebarMenuButton asChild tooltip="Submissions">
+                    <Link href="/admin/submissions">
+                      <Send />
+                      <span>Submissions</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/admin/inquiries" tooltip="Inquiries">
-                    <MessageSquare />
-                    <span>Inquiries</span>
+                  <SidebarMenuButton asChild tooltip="Inquiries">
+                    <Link href="/admin/inquiries">
+                      <MessageSquare />
+                      <span>Inquiries</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/admin/blog" tooltip="Blog Posts">
-                    <Newspaper />
-                    <span>Blog Posts</span>
+                  <SidebarMenuButton asChild tooltip="Blog Posts">
+                    <Link href="/admin/blog">
+                      <Newspaper />
+                      <span>Blog Posts</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
-                  <SidebarMenuButton href="/admin/media" tooltip="Media">
-                    <GalleryHorizontal />
-                    <span>Media</span>
+                  <SidebarMenuButton asChild tooltip="Media">
+                    <Link href="/admin/media">
+                      <GalleryHorizontal />
+                      <span>Media</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/admin/settings" tooltip="Settings">
-                    <Settings />
-                    <span>Settings</span>
+                  <SidebarMenuButton asChild tooltip="Settings">
+                    <Link href="/admin/settings">
+                      <Settings />
+                      <span>Settings</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>

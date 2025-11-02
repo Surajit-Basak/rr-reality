@@ -124,6 +124,10 @@
           "format": "email",
           "description": "Email of the person submitting the property."
         },
+        "submitterPhone": {
+          "type": "string",
+          "description": "Phone number of the person submitting the property."
+        },
         "title": { "type": "string", "description": "Title of the property listing." },
         "description": { "type": "string", "description": "Detailed description of the property." },
         "type": { "type": "string", "enum": ["House", "Apartment", "Condo", "Land"] },
@@ -133,7 +137,7 @@
         "size": { "type": "number", "description": "Size in square feet." },
         "location": { "type": "string", "description": "Address or location of the property." },
         "amenities": { "type": "array", "items": { "type": "string" } },
-        "images": { "type": "array", "items": { "type": "string" }, "description": "Array of image IDs from placeholder images." },
+        "images": { "type": "array", "items": { "type": "string", "format": "binary" }, "description": "Array of images uploaded by the user." },
         "submittedAt": {
           "type": "string",
           "format": "date-time",
@@ -151,8 +155,7 @@
         "bathrooms",
         "size",
         "location",
-        "submittedAt",
-        "images"
+        "submittedAt"
       ]
     },
     "Inquiry": {

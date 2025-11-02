@@ -36,6 +36,7 @@ export type PropertySubmission = {
   id: string;
   submitterName: string;
   submitterEmail: string;
+  submitterPhone?: string;
   title: string;
   description: string;
   type: 'House' | 'Apartment' | 'Condo' | 'Land';
@@ -45,7 +46,7 @@ export type PropertySubmission = {
   size: number;
   location: string;
   amenities: string[];
-  images: string[];
+  images: File[];
   submittedAt: any;
 }
 
@@ -74,3 +75,4 @@ export type BlogPost = {
     tags: string[];
     imageUrl: string;
 };
+

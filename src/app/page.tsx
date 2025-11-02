@@ -383,7 +383,7 @@ export default function HomePage() {
                       <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
                         <div className="p-4">
                           <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
-                            {image && <Link href={`/blog/${post.id}`} className="block h-48 bg-cover bg-center relative">
+                            {image && <Link href={`/blog/${post.slug}`} className="block h-48 bg-cover bg-center relative">
                               <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />
                             </Link>}
                             <div className="p-6 flex flex-col flex-grow">
@@ -394,7 +394,7 @@ export default function HomePage() {
                                 <span>5 min read</span>
                               </div>
                               <h3 className="text-xl font-semibold text-primary mb-3 hover:text-secondary transition-colors cursor-pointer flex-grow">
-                                <Link href={`/blog/${post.id}`}>{post.title}</Link>
+                                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                               </h3>
                               <p className="text-gray-600 mb-4 line-clamp-3">
                                 {post.content.substring(0, 100)}...
@@ -405,7 +405,7 @@ export default function HomePage() {
                                     <span key={tag} className="text-secondary font-medium text-sm">{tag}</span>
                                 ))}
                                 </div>
-                                <Link href={`/blog/${post.id}`} className="text-primary hover:text-secondary transition-colors text-sm font-medium">
+                                <Link href={`/blog/${post.slug}`} className="text-primary hover:text-secondary transition-colors text-sm font-medium">
                                   Read More <i className="ri-arrow-right-line inline-block"></i>
                                 </Link>
                               </div>

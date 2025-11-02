@@ -217,6 +217,10 @@
           "type": "string",
           "description": "Unique identifier for the BlogPost entity."
         },
+        "slug": {
+            "type": "string",
+            "description": "URL-friendly slug for the blog post."
+        },
         "title": {
           "type": "string",
           "description": "Title of the blog post."
@@ -248,6 +252,7 @@
       },
       "required": [
         "id",
+        "slug",
         "title",
         "content",
         "author",

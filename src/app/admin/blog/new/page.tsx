@@ -26,6 +26,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const formSchema = z.object({
     title: z.string().min(5, { message: "Title must be at least 5 characters." }),
+    slug: z.string().min(3, { message: "Slug must be at least 3 characters." }).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Slug must be lowercase and contain only letters, numbers, and hyphens."}),
     content: z.string().min(50, { message: "Content must be at least 50 characters." }),
     author: z.string().min(2, { message: "Author name is required." }),
     tags: z.string().transform(val => val.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)),
@@ -41,11 +42,23 @@ export default function NewBlogPostPage() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
+            slug: "",
             content: "",
             author: "Admin", // Default author
             imageUrl: "",
         },
     });
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        form.setValue("title", e.target.value);
+        const slug = e.target.value
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-');
+        form.setValue("slug", slug);
+    };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         if (!firestore) {
@@ -89,19 +102,37 @@ export default function NewBlogPostPage() {
             <CardContent>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Post Title</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="e.g., 5 Tips for First-Time Home Buyers" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="grid md:grid-cols-2 gap-8">
+                            <FormField
+                                control={form.control}
+                                name="title"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Post Title</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="e.g., 5 Tips for First-Time Home Buyers" {...field} onChange={handleTitleChange} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="slug"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>URL Slug</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="e.g., 5-tips-for-first-time-buyers" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                            This will be the URL for your blog post. It should be unique.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                         <FormField
                             control={form.control}
                             name="content"

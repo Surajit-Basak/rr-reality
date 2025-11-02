@@ -61,7 +61,7 @@ export default function BlogListPage() {
                 const image = PlaceHolderImages.find(p => p.id === post.imageUrl);
                 return (
                     <article key={post.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
-                    <Link href={`/blog/${post.id}`} className="block relative h-48 w-full">
+                    <Link href={`/blog/${post.slug}`} className="block relative h-48 w-full">
                         {image && <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />}
                     </Link>
                     <div className="p-6 flex flex-col flex-grow">
@@ -71,7 +71,7 @@ export default function BlogListPage() {
                         ))}
                         </div>
                         <h2 className="text-xl font-semibold text-primary mb-3 flex-grow">
-                        <Link href={`/blog/${post.id}`} className="hover:text-secondary transition-colors">{post.title}</Link>
+                        <Link href={`/blog/${post.slug}`} className="hover:text-secondary transition-colors">{post.title}</Link>
                         </h2>
                         <p className="text-muted-foreground text-sm line-clamp-3 mb-4 flex-grow">
                             {post.content}

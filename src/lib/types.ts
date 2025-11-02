@@ -70,6 +70,7 @@ export type Testimonial = {
 export type BlogPost = {
     id: string;
     title: string;
+    slug: string;
     content: string;
     author: string;
     publicationDate: {
@@ -78,5 +79,3 @@ export type BlogPost = {
     tags: string[];
     imageUrl: string;
 };
-
-

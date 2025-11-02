@@ -1,8 +1,33 @@
+
+'use client';
+
+import { useState } from 'react';
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 export function Footer() {
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email && email.includes('@')) {
+      toast({
+        title: "Subscribed!",
+        description: "You have been successfully subscribed to our newsletter.",
+      });
+      setEmail('');
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+      });
+    }
+  };
+
   return (
     <footer className="bg-primary text-white py-16">
       <div className="container mx-auto px-6">
@@ -31,8 +56,13 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
             <p className="text-gray-300 mb-4 text-sm">Stay updated with market trends and new listings</p>
-            <form className="space-y-3">
-              <Input type="email" placeholder="Enter your email" className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" />
+            <form className="space-y-3" onSubmit={handleNewsletterSubmit}>
+              <Input 
+                type="email" 
+                placeholder="Enter your email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" />
               <Button type="submit" className="w-full bg-secondary text-white py-2 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap text-sm h-auto">
                 Subscribe
               </Button>
@@ -69,3 +99,5 @@ export function Footer() {
     </footer>
   );
 }
+
+    

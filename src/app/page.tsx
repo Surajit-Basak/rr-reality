@@ -1,25 +1,54 @@
 
+'use client';
+
+import { useState } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PropertyCard } from "@/components/property-card";
 import { properties } from "@/lib/mock-data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Search, ChevronRight, ChevronLeft, MapPin, Star, Phone, ShieldCheck, Cog, DollarSign } from "lucide-react";
+import { Search, ChevronRight, ChevronLeft, MapPin, Star, Phone, ShieldCheck, Cog, DollarSign, Home as HomeIcon } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 export default function HomePage() {
+  const { toast } = useToast();
   const featuredProperties = properties.filter(p => p.featured);
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-1');
   const aboutImage = PlaceHolderImages.find(p => p.id === 'agent-team');
   const mapImage = PlaceHolderImages.find(p => p.id === 'map-placeholder');
-  
+
+  const [formState, setFormState] = useState({ name: '', email: '', phone: '', message: '' });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormState(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formState.name && formState.email && formState.message) {
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for your message! We will contact you soon.",
+      });
+      setFormState({ name: '', email: '', phone: '', message: '' });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Uh oh!",
+        description: "Please fill in all required fields.",
+      });
+    }
+  };
+
   const testimonials = [
     {
       name: "Jennifer & Steve Martinez",
@@ -168,8 +197,8 @@ export default function HomePage() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-            <CarouselNext className="absolute right-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselPrevious className="absolute left-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselNext className="absolute right-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
           </Carousel>
           <div className="text-center mt-12">
             <Button asChild className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
@@ -265,8 +294,8 @@ export default function HomePage() {
                 )
               })}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
-            <CarouselNext className="absolute right-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
+            <CarouselPrevious className="absolute left-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
+            <CarouselNext className="absolute right-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
           </Carousel>
         </div>
       </section>
@@ -379,8 +408,8 @@ export default function HomePage() {
                 )
               })}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-            <CarouselNext className="absolute right-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselPrevious className="absolute left-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselNext className="absolute right-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
           </Carousel>
            <div className="text-center mt-12">
             <Button asChild className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
@@ -400,22 +429,46 @@ export default function HomePage() {
           </div>
           <div className="grid lg:grid-cols-2 gap-12">
             <div>
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleContactSubmit}>
                 <div>
                   <Label className="block text-gray-700 font-medium mb-2">Full Name</Label>
-                  <Input type="text" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Enter your full name" />
+                  <Input 
+                    type="text" 
+                    name="name"
+                    value={formState.name}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                    placeholder="Enter your full name" />
                 </div>
                 <div>
                   <Label className="block text-gray-700 font-medium mb-2">Email Address</Label>
-                  <Input type="email" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Enter your email address" />
+                  <Input 
+                    type="email" 
+                    name="email"
+                    value={formState.email}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                    placeholder="Enter your email address" />
                 </div>
                 <div>
                   <Label className="block text-gray-700 font-medium mb-2">Phone Number</Label>
-                  <Input type="tel" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" placeholder="Enter your phone number" />
+                  <Input 
+                    type="tel"
+                    name="phone"
+                    value={formState.phone}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                    placeholder="Enter your phone number" />
                 </div>
                 <div>
                   <Label className="block text-gray-700 font-medium mb-2">Message</Label>
-                  <Textarea rows={5} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent resize-none" placeholder="Tell us about your real estate needs" />
+                  <Textarea 
+                    rows={5}
+                    name="message"
+                    value={formState.message}
+                    onChange={handleInputChange} 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent resize-none" 
+                    placeholder="Tell us about your real estate needs" />
                 </div>
                 <Button type="submit" className="w-full bg-secondary text-white py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
                   Send Message
@@ -437,3 +490,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    

@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useMemo } from "react";
 import { useCollection, useFirestore, useMemoFirebase, deleteDocumentNonBlocking } from "@/firebase";
 import { collection, query, doc, orderBy } from "firebase/firestore";
 import type { Property, Inquiry } from "@/lib/types";

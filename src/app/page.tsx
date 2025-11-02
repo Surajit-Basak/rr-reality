@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
 import { collection, query, where, limit, serverTimestamp } from 'firebase/firestore';
-import type { Property } from '@/lib/types';
+import type { Property, Testimonial } from '@/lib/types';
 
 export default function HomePage() {
   const { toast } = useToast();
@@ -43,6 +43,12 @@ export default function HomePage() {
   }, [firestore]);
   const { data: blogPosts, isLoading: blogLoading } = useCollection(blogPostsQuery);
 
+  const testimonialsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, "testimonials"));
+  }, [firestore]);
+  const { data: testimonials, isLoading: testimonialsLoading } = useCollection<Testimonial>(testimonialsQuery);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -51,7 +57,7 @@ export default function HomePage() {
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formState.name && formState.email && formState.message) {
+    if (firestore && formState.name && formState.email && formState.message) {
       const inquiriesCollection = collection(firestore, 'inquiries');
       addDocumentNonBlocking(inquiriesCollection, {
         ...formState,
@@ -72,27 +78,6 @@ export default function HomePage() {
       });
     }
   };
-
-  const testimonials = [
-    {
-      name: "Jennifer & Steve Martinez",
-      location: "Homebuyers, Maple Grove",
-      avatarId: "agent-1",
-      text: "R&R Realty made our home buying process incredibly smooth. Their knowledge of the local market and dedication to finding us the perfect home was outstanding. We couldn't be happier!"
-    },
-    {
-      name: "Michael Johnson",
-      location: "Home Seller, Edina",
-      avatarId: "agent-2",
-      text: "When it came time to sell our family home, R&R Realty exceeded all expectations. They got us top dollar and handled everything professionally from start to finish."
-    },
-    {
-      name: "Lisa & David Chen",
-      location: "First-time Buyers, Plymouth",
-      avatarId: "agent-3",
-      text: "As first-time homebuyers, we were nervous about the process. The R&R team guided us every step of the way and helped us find our dream home within our budget."
-    }
-  ];
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
@@ -259,32 +244,40 @@ export default function HomePage() {
           <div className="relative px-12">
             <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
               <CarouselContent className="-ml-4">
-                {testimonials.map((testimonial, index) => {
-                  const avatar = PlaceHolderImages.find(p => p.id === testimonial.avatarId);
-                  const initials = testimonial.name.split(' ').map(n => n[0]).join('');
-                  return (
+                {testimonialsLoading ? (
+                  Array.from({ length: 3 }).map((_, index) => (
                     <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                      <div className="p-4 h-full">
-                        <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow h-full flex flex-col">
-                          <div className="flex items-center mb-4 text-yellow-400">
-                            {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-                          </div>
-                          <p className="text-gray-600 mb-6 italic flex-grow">"{testimonial.text}"</p>
-                          <div className="flex items-center">
-                            <Avatar className="w-12 h-12 mr-4 bg-secondary/20">
-                              {avatar && <AvatarImage src={avatar.imageUrl} alt={testimonial.name} />}
-                              <AvatarFallback className="text-secondary font-semibold bg-transparent">{initials}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="font-semibold text-primary">{testimonial.name}</div>
-                              <div className="text-gray-600 text-sm">{testimonial.location}</div>
+                      <div className="p-4 h-full"><div className="w-full h-80 bg-white rounded-lg animate-pulse"></div></div>
+                    </CarouselItem>
+                  ))
+                ) : (
+                  testimonials?.map((testimonial, index) => {
+                    const avatar = PlaceHolderImages.find(p => p.id === testimonial.avatarId);
+                    const initials = testimonial.name.split(' ').map(n => n[0]).join('');
+                    return (
+                      <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                        <div className="p-4 h-full">
+                          <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow h-full flex flex-col">
+                            <div className="flex items-center mb-4 text-yellow-400">
+                              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                            </div>
+                            <p className="text-gray-600 mb-6 italic flex-grow">"{testimonial.text}"</p>
+                            <div className="flex items-center">
+                              <Avatar className="w-12 h-12 mr-4 bg-secondary/20">
+                                {avatar && <AvatarImage src={avatar.imageUrl} alt={testimonial.name} />}
+                                <AvatarFallback className="text-secondary font-semibold bg-transparent">{initials}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="font-semibold text-primary">{testimonial.name}</div>
+                                <div className="text-gray-600 text-sm">{testimonial.location}</div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </CarouselItem>
-                  )
-                })}
+                      </CarouselItem>
+                    )
+                  })
+                )}
               </CarouselContent>
               <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
               <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
@@ -479,5 +472,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    

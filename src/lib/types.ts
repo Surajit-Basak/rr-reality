@@ -23,3 +23,11 @@ export type Amenity = {
   label: string;
   icon: React.ElementType;
 }
+
+export type Testimonial = {
+  id: string;
+  name: string;
+  location: string;
+  avatarId: string;
+  text: string;
+};

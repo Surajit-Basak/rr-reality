@@ -230,6 +230,30 @@
         }
       },
       "required": ["email", "subscribedAt"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "type": "object",
+      "description": "Represents a client testimonial.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the person giving the testimonial."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location of the person (e.g., city, neighborhood)."
+        },
+        "avatarId": {
+          "type": "string",
+          "description": "ID for the avatar image from placeholder images."
+        },
+        "text": {
+          "type": "string",
+          "description": "The content of the testimonial."
+        }
+      },
+      "required": ["name", "location", "avatarId", "text"]
     }
   },
   "auth": {
@@ -335,8 +359,24 @@
             }
           ]
         }
+      },
+      {
+        "path": "/testimonials/{testimonialId}",
+        "definition": {
+          "entityName": "Testimonial",
+          "schema": {
+            "$ref": "#/backend/entities/Testimonial"
+          },
+          "description": "Stores client testimonials. Publicly readable.",
+          "params": [
+            {
+              "name": "testimonialId",
+              "description": "Unique identifier for the testimonial."
+            }
+          ]
+        }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to support the RR Realty Hub application, focusing on properties, inquiries, blog posts, and page content. It prioritizes security, scalability, and ease of debugging based on the core design principles. Authorization Independence is achieved by avoiding hierarchical authorization dependencies and structuring data to facilitate simple and robust security rules. The structure supports secure list operations and maintains the integrity of ownership, timestamps, and denormalized data.\n\n*   **/properties Collection:** Stores property data. Publicly accessible for reading, but write access is restricted to admins. No denormalization is needed as authorization doesn't depend on related data.\n*   **/inquiries Collection:** Stores user inquiries related to properties.  Inquiries are stored in a flat collection to avoid hierarchical dependencies.  Authorization to read is restricted to admins.\n*   **/blog_posts Collection:** Stores blog posts. Publicly readable, with write access restricted to admins.\n*   **/page_content Collection:** Stores content for various pages of the website. Publicly readable, with write access restricted to admins.\n*   **/roles_admin/{uid} Collection:** Used for DBAC. The existence of a document in this collection grants admin privileges.\n*   **/subscribers Collection:** Stores newsletter subscribers. Publicly writable so anyone can sign up, but only admins can read the list.\n\nThis structure facilitates Authorization Independence by avoiding `get()` calls in security rules. QAPs (Rules are not Filters) are supported by segregating data with different access requirements into separate collections (e.g., properties, inquiries, blog posts, and page content). Admins are managed via a dedicated `/roles_admin/{uid}` collection, enabling simple existence-based rules."
+    "reasoning": "The Firestore data structure is designed to support the RR Realty Hub application, focusing on properties, inquiries, blog posts, and page content. It prioritizes security, scalability, and ease of debugging based on the core design principles. Authorization Independence is achieved by avoiding hierarchical authorization dependencies and structuring data to facilitate simple and robust security rules. The structure supports secure list operations and maintains the integrity of ownership, timestamps, and denormalized data.\n\n*   **/properties Collection:** Stores property data. Publicly accessible for reading, but write access is restricted to admins. No denormalization is needed as authorization doesn't depend on related data.\n*   **/inquiries Collection:** Stores user inquiries related to properties.  Inquiries are stored in a flat collection to avoid hierarchical dependencies.  Authorization to read is restricted to admins.\n*   **/blog_posts Collection:** Stores blog posts. Publicly readable, with write access restricted to admins.\n*   **/page_content Collection:** Stores content for various pages of the website. Publicly readable, with write access restricted to admins.\n*   **/roles_admin/{uid} Collection:** Used for DBAC. The existence of a document in this collection grants admin privileges.\n*   **/subscribers Collection:** Stores newsletter subscribers. Publicly writable so anyone can sign up, but only admins can read the. \n*   **/testimonials Collection:** Stores client testimonials. Publicly readable, with write access restricted to admins.\n\nThis structure facilitates Authorization Independence by avoiding `get()` calls in security rules. QAPs (Rules are not Filters) are supported by segregating data with different access requirements into separate collections (e.g., properties, inquiries, blog posts, and page content). Admins are managed via a dedicated `/roles_admin/{uid}` collection, enabling simple existence-based rules."
   }
 }

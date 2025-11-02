@@ -1,3 +1,4 @@
+
 export type Property = {
   id: string;
   title: string;
@@ -31,4 +32,14 @@ export type Testimonial = {
   location: string;
   avatarId: string;
   text: string;
+};
+
+export type BlogPost = {
+    id: string;
+    title: string;
+    content: string;
+    author: string;
+    publicationDate: any; // Using `any` for Firestore serverTimestamp
+    tags: string[];
+    imageUrl: string;
 };

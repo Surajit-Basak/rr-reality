@@ -92,7 +92,7 @@ export default function AdminLayout({
                 </SidebarMenu>
             </SidebarFooter>
             </Sidebar>
-            <div className="flex flex-col w-full">
+            <SidebarInset>
                 <header className="flex h-16 items-center justify-between border-b bg-background px-6 shrink-0">
                     <div className="flex items-center gap-4">
                         <SidebarTrigger />
@@ -111,7 +111,7 @@ export default function AdminLayout({
                 <main className="p-6 overflow-auto bg-muted/40 flex-1">
                     {children}
                 </main>
-            </div>
+            </SidebarInset>
         </div>
         </SidebarProvider>
     </AuthGuard>

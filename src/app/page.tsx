@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -167,8 +168,8 @@ export default function HomePage() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-            <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselPrevious className="absolute left-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselNext className="absolute right-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
           </Carousel>
           <div className="text-center mt-12">
             <Button asChild className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
@@ -236,12 +237,12 @@ export default function HomePage() {
             </p>
           </div>
           <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
-            <CarouselContent>
+            <CarouselContent className="-ml-4">
               {testimonials.map((testimonial, index) => {
                 const avatar = PlaceHolderImages.find(p => p.id === testimonial.avatarId);
                 const initials = testimonial.name.split(' ').map(n => n[0]).join('');
                 return (
-                  <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                  <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
                     <div className="p-4 h-full">
                       <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow h-full flex flex-col">
                         <div className="flex items-center mb-4 text-yellow-400">
@@ -264,8 +265,8 @@ export default function HomePage() {
                 )
               })}
             </CarouselContent>
-             <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
-            <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
+            <CarouselPrevious className="absolute left-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
+            <CarouselNext className="absolute right-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex" />
           </Carousel>
         </div>
       </section>
@@ -342,11 +343,11 @@ export default function HomePage() {
             </p>
           </div>
           <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
-            <CarouselContent>
+            <CarouselContent className="-ml-4">
               {blogPosts.map((post) => {
                 const image = PlaceHolderImages.find(p => p.id === post.imageId);
                 return (
-                  <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3">
+                  <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
                     <div className="p-4">
                       <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
                         {image && <div className="h-48 bg-cover bg-center relative">
@@ -378,8 +379,8 @@ export default function HomePage() {
                 )
               })}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
-            <CarouselNext className="absolute right-[-2rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselPrevious className="absolute left-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
+            <CarouselNext className="absolute right-[-3.5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
           </Carousel>
            <div className="text-center mt-12">
             <Button asChild className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">

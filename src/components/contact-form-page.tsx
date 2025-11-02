@@ -49,14 +49,15 @@ const sellFormSchema = z.object({
   submitterPhone: z.string().optional(),
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
   description: z.string().min(20, { message: "Description must be at least 20 characters." }),
-  type: z.enum(["House", "Apartment", "Condo", "Land"]),
+  type: z.enum(["House", "Apartment", "Condo", "Land", "Townhouse", "Multi-Family"]),
   price: z.coerce.number().min(1, { message: "Price must be a positive number." }),
   bedrooms: z.coerce.number().int().min(0),
   bathrooms: z.coerce.number().int().min(1),
   size: z.coerce.number().int().min(100, { message: "Size must be at least 100 sqft." }),
   location: z.string().min(5, { message: "Location is required." }),
   amenities: z.array(z.string()).optional(),
-  images: z.any().optional(),
+  featuredImage: z.any().optional(),
+  galleryImages: z.any().optional(),
 });
 
 
@@ -84,7 +85,8 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
       size: 1500,
       location: "",
       amenities: [],
-      images: undefined,
+      featuredImage: undefined,
+      galleryImages: undefined,
     }
   });
 
@@ -113,15 +115,12 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
     }
     
     // Note: The 'images' field contains a FileList.
-    // We are not uploading files here, just passing the form data.
-    // The approval process would need to handle the actual upload.
-    const { images, ...submissionData } = values;
+    // In a real application, you would upload these files to a storage service (like Firebase Storage)
+    // and store the URLs. For this demo, we are acknowledging the file presence but not uploading.
+    const { featuredImage, galleryImages, ...submissionData } = values;
 
     await addDocumentNonBlocking(collection(firestore, 'property_submissions'), {
         ...submissionData,
-        // In a real scenario, you'd upload images and store URLs.
-        // For now, we'll store an empty array as a placeholder.
-        images: [], 
         submittedAt: serverTimestamp()
     });
     toast({ title: "Property Submitted!", description: "Thank you! We will review your submission shortly." });
@@ -168,55 +167,65 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
         <h2 className="text-2xl font-semibold text-primary mb-6">Submit Your Property Details</h2>
         <Form {...sellForm}>
             <form onSubmit={sellForm.handleSubmit(onSellSubmit)} className="space-y-8">
-                <div className="grid md:grid-cols-2 gap-8">
-                    <FormField control={sellForm.control} name="submitterName" render={({ field }) => (
-                        <FormItem><FormLabel>Your Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField control={sellForm.control} name="submitterEmail" render={({ field }) => (
-                          <FormItem><FormLabel>Your Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
-                      )} />
-                       <FormField control={sellForm.control} name="submitterPhone" render={({ field }) => (
-                          <FormItem><FormLabel>Your Phone</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
-                      )} />
+                {/* Submitter Info */}
+                <div className="space-y-4 p-4 border rounded-lg">
+                    <h3 className="font-medium text-lg">Your Information</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <FormField control={sellForm.control} name="submitterName" render={({ field }) => (
+                            <FormItem><FormLabel>Your Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={sellForm.control} name="submitterEmail" render={({ field }) => (
+                            <FormItem><FormLabel>Your Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={sellForm.control} name="submitterPhone" render={({ field }) => (
+                            <FormItem><FormLabel>Your Phone (Optional)</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
                     </div>
                 </div>
-                <FormField control={sellForm.control} name="title" render={({ field }) => (
-                    <FormItem><FormLabel>Property Title</FormLabel><FormControl><Input placeholder="e.g., Charming Downtown Apartment" {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
-                <FormField control={sellForm.control} name="description" render={({ field }) => (
-                    <FormItem><FormLabel>Property Description</FormLabel><FormControl><Textarea placeholder="Describe the property's key features..." {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <FormField control={sellForm.control} name="type" render={({ field }) => (
-                        <FormItem><FormLabel>Property Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>
-                                    <SelectItem value="House">House</SelectItem>
-                                    <SelectItem value="Apartment">Apartment</SelectItem>
-                                    <SelectItem value="Condo">Condo</SelectItem>
-                                    <SelectItem value="Land">Land</SelectItem>
-                                </SelectContent></Select><FormMessage /></FormItem>
+                {/* Property Details */}
+                <div className="space-y-4 p-4 border rounded-lg">
+                    <h3 className="font-medium text-lg">Property Information</h3>
+                    <FormField control={sellForm.control} name="title" render={({ field }) => (
+                        <FormItem><FormLabel>Property Title</FormLabel><FormControl><Input placeholder="e.g., Charming Downtown Apartment" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                    <FormField control={sellForm.control} name="price" render={({ field }) => (
-                        <FormItem><FormLabel>Asking Price</FormLabel><FormControl><Input type="number" placeholder="e.g., 450000" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={sellForm.control} name="size" render={({ field }) => (
-                        <FormItem><FormLabel>Size (sqft)</FormLabel><FormControl><Input type="number" placeholder="e.g., 2200" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={sellForm.control} name="bedrooms" render={({ field }) => (
-                        <FormItem><FormLabel>Bedrooms</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={sellForm.control} name="bathrooms" render={({ field }) => (
-                        <FormItem><FormLabel>Bathrooms</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormField control={sellForm.control} name="description" render={({ field }) => (
+                        <FormItem><FormLabel>Property Description</FormLabel><FormControl><Textarea rows={4} placeholder="Describe the property's key features..." {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={sellForm.control} name="location" render={({ field }) => (
                         <FormItem><FormLabel>Location / Address</FormLabel><FormControl><Input placeholder="e.g., 123 Main St, Minneapolis, MN" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
+                    <div className="grid md:grid-cols-2 gap-6">
+                         <FormField control={sellForm.control} name="type" render={({ field }) => (
+                            <FormItem><FormLabel>Property Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>
+                                        <SelectItem value="House">House</SelectItem>
+                                        <SelectItem value="Apartment">Apartment</SelectItem>
+                                        <SelectItem value="Condo">Condo</SelectItem>
+                                        <SelectItem value="Land">Land</SelectItem>
+                                        <SelectItem value="Townhouse">Townhouse</SelectItem>
+                                        <SelectItem value="Multi-Family">Multi-Family</SelectItem>
+                                    </SelectContent></Select><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={sellForm.control} name="price" render={({ field }) => (
+                            <FormItem><FormLabel>Asking Price</FormLabel><FormControl><Input type="number" placeholder="e.g., 450000" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={sellForm.control} name="size" render={({ field }) => (
+                            <FormItem><FormLabel>Size (sqft)</FormLabel><FormControl><Input type="number" placeholder="e.g., 2200" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={sellForm.control} name="bedrooms" render={({ field }) => (
+                            <FormItem><FormLabel>Bedrooms</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={sellForm.control} name="bathrooms" render={({ field }) => (
+                            <FormItem><FormLabel>Bathrooms</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                    </div>
                 </div>
+
+                {/* Amenities */}
                 <FormField control={sellForm.control} name="amenities" render={() => (
-                    <FormItem>
-                        <FormLabel>Amenities</FormLabel>
-                        <FormDescription>Select all that apply.</FormDescription>
+                    <FormItem className="space-y-4 p-4 border rounded-lg">
+                        <h3 className="font-medium text-lg">Amenities</h3>
+                         <FormDescription>Select all that apply.</FormDescription>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
                         {allAmenities.map((item) => (
                             <FormField key={item.id} control={sellForm.control} name="amenities" render={({ field }) => (
@@ -240,37 +249,56 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                     </FormItem>
                 )} />
 
-                <FormField
-                  control={sellForm.control}
-                  name="images"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Property Images</FormLabel>
-                      <FormControl>
-                        <div className="flex items-center justify-center w-full">
-                            <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <UploadCloud className="w-8 h-8 mb-4 text-gray-500" />
-                                    <p className="mb-2 text-sm text-gray-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                                </div>
-                                <Input 
-                                  id="dropzone-file" 
-                                  type="file" 
-                                  className="hidden" 
-                                  multiple
-                                  onChange={(e) => field.onChange(e.target.files)}
-                                />
-                            </label>
-                        </div> 
-                      </FormControl>
-                      <FormDescription>
-                        Upload images of your property. The first image will be the featured image.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Image Uploads */}
+                <div className="space-y-4 p-4 border rounded-lg">
+                    <h3 className="font-medium text-lg">Property Photos</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <FormField
+                        control={sellForm.control}
+                        name="featuredImage"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Featured Image</FormLabel>
+                            <FormControl>
+                                <div className="flex items-center justify-center w-full">
+                                    <label htmlFor="featured-image-upload" className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <UploadCloud className="w-8 h-8 mb-4 text-gray-500" />
+                                            <p className="mb-2 text-sm text-center text-gray-500"><span className="font-semibold">Click to upload</span><br/>or drag and drop</p>
+                                        </div>
+                                        <Input id="featured-image-upload" type="file" className="hidden" onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : null)} />
+                                    </label>
+                                </div> 
+                            </FormControl>
+                            <FormDescription>The main image for the property listing.</FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                        <FormField
+                        control={sellForm.control}
+                        name="galleryImages"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Gallery Images</FormLabel>
+                            <FormControl>
+                                <div className="flex items-center justify-center w-full">
+                                    <label htmlFor="gallery-images-upload" className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <UploadCloud className="w-8 h-8 mb-4 text-gray-500" />
+                                            <p className="mb-2 text-sm text-center text-gray-500"><span className="font-semibold">Upload multiple images</span><br/>for the gallery</p>
+                                        </div>
+                                        <Input id="gallery-images-upload" type="file" multiple className="hidden" onChange={(e) => field.onChange(e.target.files)} />
+                                    </label>
+                                </div> 
+                            </FormControl>
+                            <FormDescription>Select additional images for the gallery.</FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                    </div>
+                </div>
 
                 <Button type="submit" disabled={sellForm.formState.isSubmitting} className="w-full bg-secondary text-white py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto text-base">
                     {sellForm.formState.isSubmitting ? "Submitting..." : "Submit for Approval"}

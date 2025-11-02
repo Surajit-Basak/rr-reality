@@ -10,7 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Check, Trash2, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,7 +51,7 @@ export default function SubmissionsPage() {
         size: submission.size,
         location: submission.location,
         amenities: submission.amenities,
-        images: submission.images || [], // Admin needs to add images
+        images: [], // Admin needs to add images manually for now
         featured: false,
         agent: { // Assign a default agent
             name: "Jane Doe",

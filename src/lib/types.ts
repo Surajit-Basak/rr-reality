@@ -16,7 +16,7 @@ export type Property = {
   title: string;
   description: string;
   status: 'For Sale' | 'For Rent';
-  type: 'House' | 'Apartment' | 'Condo' | 'Land';
+  type: 'House' | 'Apartment' | 'Condo' | 'Land' | 'Townhouse' | 'Multi-Family';
   location: string;
   price: number;
   bedrooms: number;
@@ -39,14 +39,15 @@ export type PropertySubmission = {
   submitterPhone?: string;
   title: string;
   description: string;
-  type: 'House' | 'Apartment' | 'Condo' | 'Land';
+  type: 'House' | 'Apartment' | 'Condo' | 'Land' | 'Townhouse' | 'Multi-Family';
   price: number;
   bedrooms: number;
   bathrooms: number;
   size: number;
   location: string;
   amenities: string[];
-  images: File[];
+  featuredImage?: File;
+  galleryImages?: FileList;
   submittedAt: any;
 }
 
@@ -75,4 +76,5 @@ export type BlogPost = {
     tags: string[];
     imageUrl: string;
 };
+
 

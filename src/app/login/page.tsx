@@ -10,9 +10,8 @@ import { Button } from "@/components/ui/button";
 import { useAuth, useFirestore, useUser, setDocumentNonBlocking } from "@/firebase";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useToast } from '@/hooks/use-toast';
-import { doc, serverTimestamp } from 'firebase/firestore';
+import { doc, serverTimestamp, getDoc, setDoc } from 'firebase/firestore';
 
-// Configuration for the master admin
 const MASTER_ADMIN_EMAIL = "surajitbasak2023@gmail.com";
 const MASTER_ADMIN_PASS = "123456";
 
@@ -27,9 +26,10 @@ export default function LoginPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-      if (!isUserLoading && user) {
-          router.push('/admin');
-      }
+    // If the user is already logged in, redirect them to the admin page.
+    if (!isUserLoading && user) {
+      router.push('/admin');
+    }
   }, [isUserLoading, user, router]);
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -37,74 +37,101 @@ export default function LoginPage() {
     setIsLoading(true);
 
     if (!auth || !firestore) {
-        toast({
-            variant: "destructive",
-            title: "Sign In Failed",
-            description: "Authentication service not available.",
-        });
-        setIsLoading(false);
-        return;
+      toast({
+        variant: "destructive",
+        title: "Sign In Failed",
+        description: "Authentication service not available. Please try again later.",
+      });
+      setIsLoading(false);
+      return;
     }
 
     try {
-        await signInWithEmailAndPassword(auth, email, password);
-        // On success, the useEffect hook will handle the redirect.
+      // Step 1: Attempt to sign in the user.
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+      // Step 2: If sign-in is successful AND it's the master admin, ensure the profile exists.
+      // This is a robust "upsert" that guarantees the role is correctly set in Firestore.
+      if (email === MASTER_ADMIN_EMAIL) {
+        const userDocRef = doc(firestore, 'users', userCredential.user.uid);
+        await setDoc(userDocRef, {
+            uid: userCredential.user.uid,
+            email: userCredential.user.email,
+            displayName: "Master Admin",
+            role: "master-admin",
+            createdAt: serverTimestamp(),
+        }, { merge: true }); // Using merge to create or update.
+      }
+      
+      // On success, the useEffect will redirect, but we can also push directly.
+      router.push('/admin');
+
     } catch (error: any) {
-        if (email === MASTER_ADMIN_EMAIL && password === MASTER_ADMIN_PASS && error.code === 'auth/user-not-found') {
-            // If it's the master admin and the user doesn't exist, create them.
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const masterUser = userCredential.user;
-                const profileDocRef = doc(firestore, 'users', masterUser.uid);
-                
-                // Use the non-blocking function to ensure the document is created.
-                setDocumentNonBlocking(profileDocRef, {
-                    uid: masterUser.uid,
-                    email: masterUser.email,
-                    displayName: "Master Admin",
-                    role: "master-admin",
-                    createdAt: serverTimestamp(),
-                }, {});
+      // Step 3: Handle errors, including creating the master admin if they don't exist.
+      if (email === MASTER_ADMIN_EMAIL && error.code === 'auth/user-not-found') {
+        // This block runs ONLY if it's the master admin's first-ever login.
+        try {
+          const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const masterUser = newUserCredential.user;
+          
+          // Create the Firestore document with the 'master-admin' role.
+          const userDocRef = doc(firestore, 'users', masterUser.uid);
+          await setDoc(userDocRef, {
+            uid: masterUser.uid,
+            email: masterUser.email,
+            displayName: "Master Admin",
+            role: "master-admin",
+            createdAt: serverTimestamp(),
+          });
 
-                // The onAuthStateChanged listener in useUser will now have the user
-                // and the useEffect will redirect to /admin.
-                toast({
-                    title: "Admin Account Created",
-                    description: "Welcome! Redirecting you to the dashboard.",
-                });
+          toast({
+            title: "Admin Account Created",
+            description: "Welcome! Your master admin account has been set up.",
+          });
 
-            } catch (creationError: any) {
-                toast({
-                    variant: "destructive",
-                    title: "Admin Setup Failed",
-                    description: `Could not create the master admin account: ${creationError.message}`,
-                });
-            }
-        } else {
-            // Handle standard login errors
-            let description = "An unknown error occurred. Please try again.";
-            if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
-              description = "The email or password you entered is incorrect. Please try again.";
-            } else if (error.code === 'auth/user-not-found') {
-                description = "No user found with this email address."
-            }
-            toast({
-              variant: "destructive",
-              title: "Sign In Failed",
-              description: description,
-            });
+          // Redirect after successful creation and login.
+          router.push('/admin');
+
+        } catch (creationError: any) {
+          toast({
+            variant: "destructive",
+            title: "Admin Setup Failed",
+            description: `Could not create the master admin account: ${creationError.message}`,
+          });
         }
+      } else {
+        // Handle standard login errors for all other users.
+        let description = "An unknown error occurred. Please try again.";
+        if (error.code === 'auth/invalid-credential') {
+          description = "The email or password you entered is incorrect.";
+        }
+        toast({
+          variant: "destructive",
+          title: "Sign In Failed",
+          description: description,
+        });
+      }
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
+
+  // Display a loading state while checking auth status or if a login is in progress.
+  if (isUserLoading || isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
   
-  if (isUserLoading || user) {
+  // Don't render the login form if the user is already logged in.
+  if (user) {
     return (
         <div className="flex items-center justify-center min-h-screen">
-            <p>Loading...</p>
+            <p>Redirecting...</p>
         </div>
-    )
+    );
   }
 
   return (

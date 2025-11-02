@@ -174,7 +174,7 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
   );
 
   const renderSellForm = () => (
-    <div className="lg:col-span-3 bg-white p-8 rounded-lg shadow-lg">
+    <div className="bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold text-primary mb-6">Submit Your Property Details</h2>
         <Form {...sellForm}>
             <form onSubmit={sellForm.handleSubmit(onSellSubmit)} className="space-y-8">
@@ -269,54 +269,52 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                 )} />
 
                 {/* Image Uploads */}
-                <div className="space-y-4 p-4 border rounded-lg">
+                <div className="space-y-8 p-4 border rounded-lg">
                     <h3 className="font-medium text-lg">Property Photos</h3>
-                     <div className="space-y-6">
-                        <FormField
-                        control={sellForm.control}
-                        name="featuredImage"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Featured Image</FormLabel>
-                            <FormControl>
-                                <div className="flex items-center justify-center w-full">
-                                    <label htmlFor="featured-image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <UploadCloud className="w-8 h-8 mb-2 text-gray-500" />
-                                            <p className="text-sm text-center text-gray-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                        </div>
-                                        <Input id="featured-image-upload" type="file" className="hidden" onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : null)} />
-                                    </label>
-                                </div> 
-                            </FormControl>
-                            <FormDescription>The main image for the property listing.</FormDescription>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                        />
-                        <FormField
-                        control={sellForm.control}
-                        name="galleryImages"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Gallery Images</FormLabel>
-                            <FormControl>
-                                <div className="flex items-center justify-center w-full">
-                                    <label htmlFor="gallery-images-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <UploadCloud className="w-8 h-8 mb-2 text-gray-500" />
-                                            <p className="text-sm text-center text-gray-500"><span className="font-semibold">Upload multiple images</span> for the gallery</p>
-                                        </div>
-                                        <Input id="gallery-images-upload" type="file" multiple className="hidden" onChange={(e) => field.onChange(e.target.files)} />
-                                    </label>
-                                </div> 
-                            </FormControl>
-                            <FormDescription>Select additional images for the gallery.</FormDescription>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                        />
-                    </div>
+                    <FormField
+                    control={sellForm.control}
+                    name="featuredImage"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Featured Image</FormLabel>
+                        <FormControl>
+                            <div className="flex items-center justify-center w-full">
+                                <label htmlFor="featured-image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <UploadCloud className="w-8 h-8 mb-2 text-gray-500" />
+                                        <p className="text-sm text-center text-gray-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                                    </div>
+                                    <Input id="featured-image-upload" type="file" className="hidden" onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : null)} />
+                                </label>
+                            </div> 
+                        </FormControl>
+                        <FormDescription>The main image for the property listing.</FormDescription>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    <FormField
+                    control={sellForm.control}
+                    name="galleryImages"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Gallery Images</FormLabel>
+                        <FormControl>
+                            <div className="flex items-center justify-center w-full">
+                                <label htmlFor="gallery-images-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <UploadCloud className="w-8 h-8 mb-2 text-gray-500" />
+                                        <p className="text-sm text-center text-gray-500"><span className="font-semibold">Upload multiple images</span> for the gallery</p>
+                                    </div>
+                                    <Input id="gallery-images-upload" type="file" multiple className="hidden" onChange={(e) => field.onChange(e.target.files)} />
+                                </label>
+                            </div> 
+                        </FormControl>
+                        <FormDescription>Select additional images for the gallery.</FormDescription>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
                 </div>
 
                 <Button type="submit" disabled={sellForm.formState.isSubmitting} className="w-full bg-secondary text-white py-3 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto text-base">
@@ -351,50 +349,54 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
         <div className="bg-gray-50">
             <section className="py-20">
                 <div className="container mx-auto px-6">
-                    <div className="grid lg:grid-cols-5 gap-12">
-                        {isSellPage ? renderSellForm() : renderContactForm()}
-                        
-                        <div className="lg:col-span-2">
-                            <div className="bg-primary text-white p-8 rounded-lg shadow-lg h-full">
-                                <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
-                                <p className="text-gray-300 mb-8">
-                                    We're here to help! Reach out to us through any of the following methods.
-                                </p>
-                                <div className="space-y-6 text-lg">
-                                    <div className="flex items-start gap-4">
-                                        <MapPin className="h-6 w-6 mt-1 text-secondary" />
-                                        <div>
-                                            <h3 className="font-semibold">Our Office</h3>
-                                            <p className="text-gray-300">123 Main Street<br />Minneapolis, MN 55401</p>
+                    {isSellPage ? (
+                        renderSellForm()
+                    ) : (
+                        <div className="grid lg:grid-cols-5 gap-12">
+                            {renderContactForm()}
+                            <div className="lg:col-span-2">
+                                <div className="bg-primary text-white p-8 rounded-lg shadow-lg h-full">
+                                    <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
+                                    <p className="text-gray-300 mb-8">
+                                        We're here to help! Reach out to us through any of the following methods.
+                                    </p>
+                                    <div className="space-y-6 text-lg">
+                                        <div className="flex items-start gap-4">
+                                            <MapPin className="h-6 w-6 mt-1 text-secondary" />
+                                            <div>
+                                                <h3 className="font-semibold">Our Office</h3>
+                                                <p className="text-gray-300">123 Main Street<br />Minneapolis, MN 55401</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-4">
+                                            <Mail className="h-6 w-6 mt-1 text-secondary" />
+                                            <div>
+                                                <h3 className="font-semibold">Email Us</h3>
+                                                <a href="mailto:info@rrrealty.com" className="text-gray-300 hover:text-white">info@rrrealty.com</a>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-4">
+                                            <Phone className="h-6 w-6 mt-1 text-secondary" />
+                                            <div>
+                                                <h3 className="font-semibold">Call Us</h3>
+                                                <a href="tel:612-555-0123" className="text-gray-300 hover:text-white">(612) 555-0123</a>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="flex items-start gap-4">
-                                        <Mail className="h-6 w-6 mt-1 text-secondary" />
-                                        <div>
-                                            <h3 className="font-semibold">Email Us</h3>
-                                            <a href="mailto:info@rrrealty.com" className="text-gray-300 hover:text-white">info@rrrealty.com</a>
-                                        </div>
+                                    <div className="mt-8 border-t border-white/20 pt-6">
+                                        <h3 className="font-semibold text-lg mb-2">Business Hours</h3>
+                                        <p className="text-gray-300">Monday - Friday: 9am - 6pm</p>
+                                        <p className="text-gray-300">Saturday: 10am - 4pm</p>
+                                        <p className="text-gray-300">Sunday: By Appointment</p>
                                     </div>
-                                    <div className="flex items-start gap-4">
-                                        <Phone className="h-6 w-6 mt-1 text-secondary" />
-                                        <div>
-                                            <h3 className="font-semibold">Call Us</h3>
-                                            <a href="tel:612-555-0123" className="text-gray-300 hover:text-white">(612) 555-0123</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="mt-8 border-t border-white/20 pt-6">
-                                    <h3 className="font-semibold text-lg mb-2">Business Hours</h3>
-                                    <p className="text-gray-300">Monday - Friday: 9am - 6pm</p>
-                                    <p className="text-gray-300">Saturday: 10am - 4pm</p>
-                                    <p className="text-gray-300">Sunday: By Appointment</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </section>
         </div>
     </div>
   );
 }
+

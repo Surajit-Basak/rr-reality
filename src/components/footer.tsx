@@ -6,14 +6,23 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useFirestore, addDocumentNonBlocking } from '@/firebase';
+import { collection, serverTimestamp } from 'firebase/firestore';
 
 export function Footer() {
   const { toast } = useToast();
+  const firestore = useFirestore();
   const [email, setEmail] = useState('');
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && email.includes('@')) {
+    if (firestore && email && email.includes('@')) {
+      const subscribersCollection = collection(firestore, 'subscribers');
+      addDocumentNonBlocking(subscribersCollection, {
+        email: email,
+        subscribedAt: serverTimestamp()
+      });
+
       toast({
         title: "Subscribed!",
         description: "You have been successfully subscribed to our newsletter.",

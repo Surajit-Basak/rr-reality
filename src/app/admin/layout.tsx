@@ -92,7 +92,7 @@ export default function AdminLayout({
               </SidebarMenu>
             </SidebarFooter>
           </Sidebar>
-          <SidebarInset className="flex-1 w-full">
+          <SidebarInset className="flex-1 w-full flex flex-col">
             <header className="flex h-16 items-center justify-between border-b bg-background px-6 shrink-0">
               <div className="flex items-center gap-4">
                 <SidebarTrigger />

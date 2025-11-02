@@ -66,12 +66,13 @@ service cloud.firestore {
     /**
      * @description Rules for the /users/{userId} collection.
      * @path /users/{userId}
-     * @allow get: Users can read their own profile.
+     * @allow get: Any signed-in user can read any user profile. This is necessary for other rules to check roles.
      * @allow create: A user can create their own profile document.
      * @allow (list, update, delete): Only master admins can manage other users.
      */
     match /users/{userId} {
-      allow get, create: if isOwner(userId);
+      allow get: if isSignedIn();
+      allow create: if isOwner(userId);
       allow list, update, delete: if isMasterAdmin();
     }
     

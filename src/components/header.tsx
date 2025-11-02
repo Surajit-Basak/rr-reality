@@ -6,10 +6,9 @@ import { Menu } from "lucide-react";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/properties", label: "Buy" },
-  { href: "/sell", label: "Sell" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" },
+  { href: "/properties", label: "Properties" },
+  { href: "/blog", label: "Insights" },
+  { href: "/sell", label: "Sell your home" },
 ];
 
 export function Header() {
@@ -20,7 +19,7 @@ export function Header() {
           <span className="text-2xl font-bold text-primary">R&R Realty</span>
         </Link>
         
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden lg:flex items-center space-x-8">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -37,7 +36,7 @@ export function Header() {
 
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" className="md:hidden">
+            <Button variant="ghost" className="lg:hidden">
               <Menu className="h-6 w-6" />
               <span className="sr-only">Toggle Menu</span>
             </Button>

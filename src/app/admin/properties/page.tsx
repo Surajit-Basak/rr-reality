@@ -101,9 +101,11 @@ export default function AdminPropertiesPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>
-                            <FilePenLine className="mr-2 h-4 w-4" />
-                            Edit
+                          <DropdownMenuItem asChild>
+                            <Link href={`/admin/properties/edit/${property.id}`}>
+                                <FilePenLine className="mr-2 h-4 w-4" />
+                                Edit
+                            </Link>
                           </DropdownMenuItem>
                           <AlertDialogTrigger asChild>
                             <DropdownMenuItem className="text-destructive focus:text-destructive">

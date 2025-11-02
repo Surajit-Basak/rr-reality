@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { notFound } from "next/navigation";
@@ -18,16 +17,6 @@ import type { Metadata } from 'next';
 type Props = {
   params: { slug: string };
 };
-
-// This function is commented out as it requires a different setup for dynamic server-side generation
-// with client-side data fetching hooks. We'll manage metadata within the client component.
-// export async function generateMetadata({ params }: Props): Promise<Metadata> {
-//   // In a full server component, you would fetch data here
-//   // For now, we are using a client-side approach
-//   return {
-//     title: 'Blog Post',
-//   };
-// }
 
 export default function BlogPostPage({ params }: Props) {
   const firestore = useFirestore();
@@ -106,7 +95,6 @@ export default function BlogPostPage({ params }: Props) {
             </div>
           )}
           
-          {/* Using a simple div and whitespace style to render paragraphs from the content */}
           <div 
             className="prose prose-lg max-w-none text-muted-foreground leading-relaxed"
             style={{ whiteSpace: 'pre-line' }}
@@ -125,5 +113,3 @@ export default function BlogPostPage({ params }: Props) {
     </div>
   );
 }
-
-    

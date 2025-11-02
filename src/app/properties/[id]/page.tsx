@@ -1,8 +1,10 @@
+
+'use client';
+
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import type { Metadata, ResolvingMetadata } from "next";
-
-import { properties } from "@/lib/mock-data";
+import { useDoc, useFirestore } from "@/firebase";
+import { doc } from "firebase/firestore";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,38 +15,20 @@ import { BedDouble, Bath, Square, MapPin, Phone, Mail, CheckCircle } from "lucid
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { PropertyCard } from "@/components/property-card";
 import { InquiryForm } from "./inquiry-form";
+import type { Property } from "@/lib/types";
 
 type Props = {
   params: { id: string };
 };
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const property = properties.find(p => p.id === params.id);
-  if (!property) {
-    return {
-      title: "Property Not Found",
-    };
-  }
-
-  const previousImages = (await parent).openGraph?.images || [];
-  const coverImage = PlaceHolderImages.find(p => p.id === property.images[0]);
-
-  return {
-    title: property.title,
-    description: property.description,
-    openGraph: {
-      title: property.title,
-      description: property.description.substring(0, 160),
-      images: coverImage ? [coverImage.imageUrl, ...previousImages] : previousImages,
-    },
-  };
-}
-
 export default function PropertyDetailPage({ params }: Props) {
-  const property = properties.find(p => p.id === params.id);
+  const firestore = useFirestore();
+  const propertyRef = doc(firestore, 'properties', params.id);
+  const { data: property, isLoading } = useDoc<Property>(propertyRef);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (!property) {
     notFound();
@@ -54,9 +38,9 @@ export default function PropertyDetailPage({ params }: Props) {
   const propertyImages = property.images.map(id => PlaceHolderImages.find(p => p.id === id)).filter(Boolean);
   const mapImage = PlaceHolderImages.find(p => p.id === 'map-placeholder');
 
-  const relatedProperties = properties
-    .filter(p => p.type === property.type && p.id !== property.id)
-    .slice(0, 3);
+  // Note: Related properties logic would need to be updated to fetch from Firestore.
+  // This is a placeholder for now.
+  const relatedProperties: Property[] = [];
     
   const formatPrice = (price: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(price);
 

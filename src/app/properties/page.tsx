@@ -1,16 +1,19 @@
-import { properties } from "@/lib/mock-data";
+
+'use client';
+
+import { useCollection, useFirestore } from "@/firebase";
 import { PropertiesClientPage } from "./properties-client-page";
+import { collection, query } from "firebase/firestore";
 
-// SEO metadata for the properties page
-export const metadata = {
-  title: 'All Properties',
-  description: 'Search and browse all available properties for sale and for rent.',
-};
+export default function PropertiesPage() {
+  const firestore = useFirestore();
+  const propertiesCollection = collection(firestore, 'properties');
+  const propertiesQuery = query(propertiesCollection);
+  const { data: allProperties, isLoading } = useCollection(propertiesQuery);
 
-export default async function PropertiesPage() {
-  // In a real app, you would fetch properties from a database.
-  // We are using mock data here.
-  const allProperties = properties;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  return <PropertiesClientPage allProperties={allProperties} />;
+  return <PropertiesClientPage allProperties={allProperties || []} />;
 }

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PropertyCard } from "@/components/property-card";
-import { properties } from "@/lib/mock-data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Search, ChevronRight, ChevronLeft, MapPin, Star, Phone, ShieldCheck, Cog, DollarSign, Home as HomeIcon } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -17,15 +16,27 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { useCollection, useFirestore } from '@/firebase';
+import { collection, query, where, limit } from 'firebase/firestore';
+import type { Property } from '@/lib/types';
 
 export default function HomePage() {
   const { toast } = useToast();
-  const featuredProperties = properties.filter(p => p.featured);
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-1');
   const aboutImage = PlaceHolderImages.find(p => p.id === 'agent-team');
   const mapImage = PlaceHolderImages.find(p => p.id === 'map-placeholder');
 
   const [formState, setFormState] = useState({ name: '', email: '', phone: '', message: '' });
+
+  const firestore = useFirestore();
+  const propertiesCollection = collection(firestore, 'properties');
+  
+  const featuredPropertiesQuery = query(propertiesCollection, where("featured", "==", true));
+  const { data: featuredProperties, isLoading: featuredLoading } = useCollection<Property>(featuredPropertiesQuery);
+
+  const blogPostsQuery = query(collection(firestore, "blog_posts"), limit(4));
+  const { data: blogPosts, isLoading: blogLoading } = useCollection(blogPostsQuery);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -67,49 +78,6 @@ export default function HomePage() {
       location: "First-time Buyers, Plymouth",
       avatarId: "agent-3",
       text: "As first-time homebuyers, we were nervous about the process. The R&R team guided us every step of the way and helped us find our dream home within our budget."
-    }
-  ];
-
-  const blogPosts = [
-    {
-      id: "blog-1",
-      title: "2025 Minnesota Real Estate Market Predictions",
-      date: "December 15, 2024",
-      readTime: "5 min read",
-      category: "Market Analysis",
-      imageId: "property-5-ext",
-      imageHint: "house key",
-      excerpt: "Discover what experts predict for the Minnesota housing market in 2025, including price trends, inventory levels, and the best times to buy or sell."
-    },
-    {
-      id: "blog-2",
-      title: "First-Time Homebuyer's Complete Guide",
-      date: "December 12, 2024",
-      readTime: "7 min read",
-      category: "Buying Guide",
-      imageId: "property-2-int-1",
-      imageHint: "staged living room",
-      excerpt: "Everything you need to know as a first-time homebuyer, from getting pre-approved to closing day. Navigate the process with confidence."
-    },
-    {
-      id: "blog-3",
-      title: "10 Home Staging Tips That Sell Faster",
-      date: "December 10, 2024",
-      readTime: "4 min read",
-      category: "Selling Tips",
-      imageId: "property-7-ext",
-      imageHint: "house chart",
-      excerpt: "Transform your home into a buyer's dream with these proven staging techniques. Simple changes that can increase your home's value and appeal."
-    },
-     {
-      id: "blog-4",
-      title: "Understanding Mortgage Rates in 2024",
-      date: "December 8, 2024",
-      readTime: "6 min read",
-      category: "Finance Guide",
-      imageId: "property-7-ext",
-      imageHint: "house chart",
-      excerpt: "Get insights into current mortgage rates, how they affect your buying power, and strategies to secure the best rate for your home loan."
     }
   ];
 
@@ -191,11 +159,15 @@ export default function HomePage() {
             className="w-full"
           >
             <CarouselContent className="-ml-4">
-              {featuredProperties.map((property) => (
-                <CarouselItem key={property.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                  <PropertyCard property={property} />
-                </CarouselItem>
-              ))}
+              {featuredLoading ? (
+                <p>Loading...</p>
+              ) : (
+                featuredProperties?.map((property) => (
+                  <CarouselItem key={property.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                    <PropertyCard property={property} />
+                  </CarouselItem>
+                ))
+              )}
             </CarouselContent>
             <CarouselPrevious className="absolute left-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
             <CarouselNext className="absolute right-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
@@ -373,40 +345,44 @@ export default function HomePage() {
           </div>
           <Carousel opts={{ align: "start", loop: true, slidesToScroll: 1 }} className="w-full">
             <CarouselContent className="-ml-4">
-              {blogPosts.map((post) => {
-                const image = PlaceHolderImages.find(p => p.id === post.imageId);
-                return (
-                  <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                    <div className="p-4">
-                      <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
-                        {image && <div className="h-48 bg-cover bg-center relative">
-                          <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={post.imageHint} />
-                        </div>}
-                        <div className="p-6 flex flex-col flex-grow">
-                          <div className="flex items-center text-sm text-gray-500 mb-3">
-                            <i className="ri-calendar-line mr-2"></i>
-                            <span>{post.date}</span>
-                            <span className="mx-2">•</span>
-                            <span>{post.readTime}</span>
+              {blogLoading ? (
+                <p>Loading...</p>
+              ) : (
+                blogPosts?.map((post: any) => {
+                  const image = PlaceHolderImages.find(p => p.id === post.imageUrl);
+                  return (
+                    <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                      <div className="p-4">
+                        <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
+                          {image && <div className="h-48 bg-cover bg-center relative">
+                            <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />
+                          </div>}
+                          <div className="p-6 flex flex-col flex-grow">
+                            <div className="flex items-center text-sm text-gray-500 mb-3">
+                              <i className="ri-calendar-line mr-2"></i>
+                              <span>{new Date(post.publicationDate).toLocaleDateString()}</span>
+                              <span className="mx-2">•</span>
+                              <span>{post.readTime || '5 min read'}</span>
+                            </div>
+                            <h3 className="text-xl font-semibold text-primary mb-3 hover:text-secondary transition-colors cursor-pointer flex-grow">
+                              {post.title}
+                            </h3>
+                            <p className="text-gray-600 mb-4 line-clamp-3">
+                              {post.content.substring(0, 100)}...
+                            </p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-secondary font-medium text-sm">{post.tags.join(', ')}</span>
+                              <Link href="#" className="text-primary hover:text-secondary transition-colors text-sm font-medium">
+                                Read More <i className="ri-arrow-right-line inline-block"></i>
+                              </Link>
+                            </div>
                           </div>
-                          <h3 className="text-xl font-semibold text-primary mb-3 hover:text-secondary transition-colors cursor-pointer flex-grow">
-                            {post.title}
-                          </h3>
-                          <p className="text-gray-600 mb-4 line-clamp-3">
-                            {post.excerpt}
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-secondary font-medium text-sm">{post.category}</span>
-                            <Link href="#" className="text-primary hover:text-secondary transition-colors text-sm font-medium">
-                              Read More <i className="ri-arrow-right-line inline-block"></i>
-                            </Link>
-                          </div>
-                        </div>
-                      </article>
-                    </div>
-                  </CarouselItem>
-                )
-              })}
+                        </article>
+                      </div>
+                    </CarouselItem>
+                  )
+                })
+              )}
             </CarouselContent>
             <CarouselPrevious className="absolute left-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
             <CarouselNext className="absolute right-[-5rem] top-1/2 -translate-y-1/2 hidden lg:flex w-12 h-12 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow" />
@@ -490,5 +466,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    

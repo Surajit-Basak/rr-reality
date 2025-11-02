@@ -1,21 +1,31 @@
+
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { Property } from '@/lib/types';
 import { SearchFilters } from '@/components/search-filters';
 import { PropertyCard } from '@/components/property-card';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { useSearchParams } from 'next/navigation';
 
 interface PropertiesClientPageProps {
   allProperties: Property[];
 }
 
 export function PropertiesClientPage({ allProperties }: PropertiesClientPageProps) {
-  const [keyword, setKeyword] = useState('');
-  const [propertyType, setPropertyType] = useState('all');
+  const searchParams = useSearchParams();
+
+  // Initialize state from URL params or defaults
+  const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
+  const [propertyType, setPropertyType] = useState(searchParams.get('type') || 'all');
   const [status, setStatus] = useState('all');
-  const [priceRange, setPriceRange] = useState([0, 2000000]);
-  const [bedrooms, setBedrooms] = useState('any');
+  
+  const initialPrice = searchParams.get('price');
+  const priceToNumber = initialPrice ? parseInt(initialPrice.split('-')[1], 10) : 2000000;
+  const [priceRange, setPriceRange] = useState([0, isNaN(priceToNumber) ? 2000000 : priceToNumber]);
+  
+  const [bedrooms, setBedrooms] = useState(searchParams.get('bedrooms') || 'any');
   const [bathrooms, setBathrooms] = useState('any');
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   

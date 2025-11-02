@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState } from 'react';
@@ -19,14 +20,17 @@ import { Label } from "@/components/ui/label";
 import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
 import { collection, query, where, limit, serverTimestamp, orderBy } from 'firebase/firestore';
 import type { Property, Testimonial, BlogPost } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
   const { toast } = useToast();
+  const router = useRouter();
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-1');
   const aboutImage = PlaceHolderImages.find(p => p.id === 'agent-team');
   const mapImage = PlaceHolderImages.find(p => p.id === 'map-placeholder');
 
   const [formState, setFormState] = useState({ name: '', email: '', phone: '', message: '' });
+  const [searchState, setSearchState] = useState({ keyword: '', price: 'any', bedrooms: 'any' });
 
   const firestore = useFirestore();
   
@@ -54,6 +58,20 @@ export default function HomePage() {
     const { name, value } = e.target;
     setFormState(prevState => ({ ...prevState, [name]: value }));
   };
+
+  const handleSearchChange = (name: string, value: string) => {
+    setSearchState(prevState => ({ ...prevState, [name]: value }));
+  }
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchState.keyword) params.append('keyword', searchState.keyword);
+    if (searchState.price !== 'any') params.append('price', searchState.price);
+    if (searchState.bedrooms !== 'any') params.append('bedrooms', searchState.bedrooms);
+    
+    router.push(`/properties?${params.toString()}`);
+  }
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,17 +112,23 @@ export default function HomePage() {
             Your trusted partner in finding the perfect home or selling your property at the best value in today's market.
           </p>
           <div className="bg-white shadow-xl rounded-xl p-6 mb-8 text-gray-700 max-w-5xl mx-auto border border-gray-100">
-            <form className="grid md:grid-cols-4 gap-4 items-end">
+            <form className="grid md:grid-cols-4 gap-4 items-end" onSubmit={handleSearchSubmit}>
               <div className="space-y-2 text-left">
                 <Label className="text-sm font-semibold text-gray-700 mb-2">Location</Label>
                 <div className="relative">
-                  <Input type="text" placeholder="City, ZIP code, or neighborhood" className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors" />
+                  <Input 
+                    type="text" 
+                    placeholder="City, ZIP code, or neighborhood" 
+                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors" 
+                    value={searchState.keyword}
+                    onChange={(e) => handleSearchChange('keyword', e.target.value)}
+                  />
                    <i className="ri-map-pin-line text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2"></i>
                 </div>
               </div>
               <div className="space-y-2 text-left">
                   <Label className="text-sm font-semibold text-gray-700 mb-2">Price Range</Label>
-                  <Select>
+                  <Select value={searchState.price} onValueChange={(value) => handleSearchChange('price', value)}>
                     <SelectTrigger className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors text-left h-auto">
                       <i className="ri-money-dollar-circle-line text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2"></i>
                       <SelectValue placeholder="Any Price" />
@@ -112,15 +136,15 @@ export default function HomePage() {
                     <SelectContent>
                       <SelectItem value="any">Any Price</SelectItem>
                       <SelectItem value="0-300000">Under $300K</SelectItem>
-                      <SelectItem value="300000-500000">$300K - $500K</SelectItem>
-                      <SelectItem value="500000-750000">$500K - $750K</SelectItem>
-                      <SelectItem value="750000+">$750K+</SelectItem>
+                      <SelectItem value="0-500000">$300K - $500K</SelectItem>
+                      <SelectItem value="0-750000">$500K - $750K</SelectItem>
+                      <SelectItem value="750000-99999999">$750K+</SelectItem>
                     </SelectContent>
                   </Select>
               </div>
               <div className="space-y-2 text-left">
                 <Label className="text-sm font-semibold text-gray-700 mb-2">Bedrooms</Label>
-                 <Select>
+                 <Select value={searchState.bedrooms} onValueChange={(value) => handleSearchChange('bedrooms', value)}>
                     <SelectTrigger className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors text-left h-auto">
                        <i className="ri-hotel-bed-line text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2"></i>
                       <SelectValue placeholder="Any Beds" />

@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import {
   SidebarProvider,
@@ -46,25 +47,25 @@ export default function AdminLayout({
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin" tooltip="Properties">
+                    <SidebarMenuButton href="/admin/properties" tooltip="Properties">
                     <Home />
                     <span>Properties</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin" tooltip="Inquiries">
+                    <SidebarMenuButton href="/admin/inquiries" tooltip="Inquiries">
                     <MessageSquare />
                     <span>Inquiries</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin" tooltip="Blog Posts">
+                    <SidebarMenuButton href="/admin/blog" tooltip="Blog Posts">
                     <Newspaper />
                     <span>Blog Posts</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin" tooltip="Settings">
+                    <SidebarMenuButton href="/admin/settings" tooltip="Settings">
                     <Settings />
                     <span>Settings</span>
                     </SidebarMenuButton>

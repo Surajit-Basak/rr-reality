@@ -36,15 +36,20 @@ export function AuthGuard({ children, role }: AuthGuardProps) {
   
   if (isLoading) {
     return (
-        <div className="p-4 md:p-8 space-y-4">
-            <Skeleton className="h-16 w-full" />
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Skeleton className="h-24 w-full" />
-                <Skeleton className="h-24 w-full" />
-                <Skeleton className="h-24 w-full" />
-                <Skeleton className="h-24 w-full" />
-            </div>
-            <Skeleton className="h-96 w-full" />
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="p-4 md:p-8 space-y-4 w-full max-w-4xl">
+              <div className="space-y-2">
+                <Skeleton className="h-8 w-1/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  <Skeleton className="h-24 w-full" />
+                  <Skeleton className="h-24 w-full" />
+                  <Skeleton className="h-24 w-full" />
+                  <Skeleton className="h-24 w-full" />
+              </div>
+              <Skeleton className="h-96 w-full" />
+          </div>
         </div>
     );
   }
@@ -65,9 +70,10 @@ export function AuthGuard({ children, role }: AuthGuardProps) {
         hasPermission = userRole === role;
     }
     
+    // This check is now robust because isLoading is false.
     if (!userProfile || !hasPermission) {
       return (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center min-h-screen">
           <Card className="m-4">
             <CardHeader><CardTitle>Access Denied</CardTitle></CardHeader>
             <CardContent>

@@ -170,16 +170,18 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                 {/* Submitter Info */}
                 <div className="space-y-4 p-4 border rounded-lg">
                     <h3 className="font-medium text-lg">Your Information</h3>
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-6">
                         <FormField control={sellForm.control} name="submitterName" render={({ field }) => (
                             <FormItem><FormLabel>Your Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                         )} />
-                        <FormField control={sellForm.control} name="submitterEmail" render={({ field }) => (
-                            <FormItem><FormLabel>Your Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={sellForm.control} name="submitterPhone" render={({ field }) => (
-                            <FormItem><FormLabel>Your Phone (Optional)</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <FormField control={sellForm.control} name="submitterEmail" render={({ field }) => (
+                                <FormItem><FormLabel>Your Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
+                            )} />
+                            <FormField control={sellForm.control} name="submitterPhone" render={({ field }) => (
+                                <FormItem><FormLabel>Your Phone (Optional)</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
+                            )} />
+                        </div>
                     </div>
                 </div>
 
@@ -252,7 +254,7 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                 {/* Image Uploads */}
                 <div className="space-y-4 p-4 border rounded-lg">
                     <h3 className="font-medium text-lg">Property Photos</h3>
-                    <div className="grid md:grid-cols-2 gap-6">
+                     <div className="grid md:grid-cols-2 gap-6">
                         <FormField
                         control={sellForm.control}
                         name="featuredImage"

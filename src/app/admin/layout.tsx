@@ -93,7 +93,7 @@ export default function AdminLayout({
             </SidebarFooter>
             </Sidebar>
             <SidebarInset className="bg-muted/40">
-                <header className="flex h-16 items-center justify-between border-b bg-background px-6">
+                <header className="flex h-16 items-center justify-between border-b bg-background px-6 shrink-0">
                     <div className="flex items-center gap-4">
                         <SidebarTrigger />
                         <h1 className="text-xl font-semibold">Admin Dashboard</h1>
@@ -108,7 +108,7 @@ export default function AdminLayout({
                         </Link>
                     </Button>
                 </header>
-                <div className="p-4 md:p-8">
+                <div className="p-6 overflow-auto">
                     {children}
                 </div>
             </SidebarInset>

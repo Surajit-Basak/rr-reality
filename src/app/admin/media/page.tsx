@@ -8,14 +8,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { FilePenLine, UploadCloud } from 'lucide-react';
 import { EditMediaDialog } from './edit-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 export default function MediaPage() {
   const [selectedImage, setSelectedImage] = useState<ImagePlaceholder | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleEditClick = (image: ImagePlaceholder) => {
     setSelectedImage(image);
     setIsDialogOpen(true);
+  };
+
+  const handleUploadClick = () => {
+    toast({
+      title: "Feature Not Implemented",
+      description: "The media upload functionality has not been built yet.",
+    });
   };
 
   return (
@@ -26,7 +35,7 @@ export default function MediaPage() {
                 <CardTitle>Media Library</CardTitle>
                 <CardDescription>View and manage your placeholder images.</CardDescription>
             </div>
-            <Button disabled>
+            <Button onClick={handleUploadClick}>
                 <UploadCloud className="mr-2 h-4 w-4" />
                 Upload New Media
             </Button>

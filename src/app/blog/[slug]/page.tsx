@@ -12,10 +12,21 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import type { Metadata } from 'next';
 
 type Props = {
   params: { slug: string };
 };
+
+// This function is commented out as it requires a different setup for dynamic server-side generation
+// with client-side data fetching hooks. We'll manage metadata within the client component.
+// export async function generateMetadata({ params }: Props): Promise<Metadata> {
+//   // In a full server component, you would fetch data here
+//   // For now, we are using a client-side approach
+//   return {
+//     title: 'Blog Post',
+//   };
+// }
 
 export default function BlogPostPage({ params }: Props) {
   const firestore = useFirestore();
@@ -28,6 +39,16 @@ export default function BlogPostPage({ params }: Props) {
   const { data: posts, isLoading } = useCollection<BlogPost>(blogPostQuery);
 
   const post = posts?.[0];
+
+  // Dynamically set page title and description
+  if (post) {
+      document.title = post.seoTitle || post.title;
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+          metaDescription.setAttribute('content', post.seoDescription || post.content.substring(0, 160));
+      }
+  }
+
 
   if (isLoading) {
     return (
@@ -103,3 +124,5 @@ export default function BlogPostPage({ params }: Props) {
     </div>
   );
 }
+
+    

@@ -31,6 +31,8 @@ const formSchema = z.object({
     author: z.string().min(2, { message: "Author name is required." }),
     tags: z.string().transform(val => val.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)),
     imageUrl: z.string().min(1, { message: "Please select an image." }),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
 });
 
 export default function NewBlogPostPage() {
@@ -46,6 +48,8 @@ export default function NewBlogPostPage() {
             content: "",
             author: "Admin", // Default author
             imageUrl: "",
+            seoTitle: "",
+            seoDescription: "",
         },
     });
 
@@ -209,6 +213,43 @@ export default function NewBlogPostPage() {
                                 </FormItem>
                             )}
                         />
+                        
+                        <div className="space-y-4 p-4 border rounded-lg">
+                            <h3 className="font-medium text-lg">SEO Settings</h3>
+                             <FormField
+                                control={form.control}
+                                name="seoTitle"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>SEO Title</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} placeholder="Custom title for search engines" />
+                                        </FormControl>
+                                        <FormDescription>
+                                            If empty, the post title will be used.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="seoDescription"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>SEO Description</FormLabel>
+                                        <FormControl>
+                                            <Textarea {...field} placeholder="Custom description for search engines" />
+                                        </FormControl>
+                                        <FormDescription>
+                                            A short summary of the post (around 155 characters).
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
 
                         <Button type="submit" disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting ? "Publishing..." : "Publish Post"}
@@ -219,3 +260,5 @@ export default function NewBlogPostPage() {
         </Card>
     );
 }
+
+    

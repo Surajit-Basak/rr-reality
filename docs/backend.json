@@ -248,6 +248,14 @@
         "imageUrl": {
           "type": "string",
           "description": "URL of the blog post's main image."
+        },
+        "seoTitle": {
+          "type": "string",
+          "description": "SEO title for the blog post."
+        },
+        "seoDescription": {
+          "type": "string",
+          "description": "SEO description for the blog post."
         }
       },
       "required": [
@@ -485,3 +493,5 @@
     "reasoning": "The Firestore data structure is designed to support the RR Realty Hub application, focusing on properties, inquiries, blog posts, and page content. It prioritizes security, scalability, and ease of debugging based on the core design principles. Authorization Independence is achieved by avoiding hierarchical authorization dependencies and structuring data to facilitate simple and robust security rules. The structure supports secure list operations and maintains the integrity of ownership, timestamps, and denormalized data.\n\n*   **/users Collection:** Stores user profiles and their roles. This is critical for role-based access control.\n*   **/properties Collection:** Stores property data. Publicly accessible for reading, but write access is restricted to admins. No denormalization is needed as authorization doesn't depend on related data.\n*   **/property_submissions Collection:** Stores properties submitted by users. Anyone can create a submission, but only admins can read, approve (which moves it to the /properties collection), or reject them.\n*   **/inquiries Collection:** Stores user inquiries related to properties.  Inquiries are stored in a flat collection to avoid hierarchical dependencies.  Authorization to read is restricted to admins.\n*   **/blog_posts Collection:** Stores blog posts. Publicly readable, with write access restricted to admins.\n*   **/page_content Collection:** Stores content for various pages of the website. Publicly readable, with write access restricted to admins.\n*   **/subscribers Collection:** Stores newsletter subscribers. Publicly writable so anyone can sign up, but only admins can read the. \n*   **/testimonials Collection:** Stores client testimonials. Publicly readable, with write access restricted to admins.\n\nThis structure facilitates Authorization Independence by avoiding `get()` calls in security rules. QAPs (Rules are not Filters) are supported by segregating data with different access requirements into separate collections (e.g., properties, inquiries, blog posts, and page content). Roles are stored directly on the user document, allowing security rules to check a user's role efficiently."
   }
 }
+
+    

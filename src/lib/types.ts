@@ -78,4 +78,8 @@ export type BlogPost = {
     }; // Using `any` for Firestore serverTimestamp
     tags: string[];
     imageUrl: string;
+    seoTitle?: string;
+    seoDescription?: string;
 };
+
+    

@@ -41,7 +41,7 @@ export default function AdminLayout({
             <SidebarContent>
                 <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin" isActive tooltip="Dashboard">
+                    <SidebarMenuButton href="/admin" tooltip="Dashboard">
                     <LayoutDashboard />
                     <span>Dashboard</span>
                     </SidebarMenuButton>

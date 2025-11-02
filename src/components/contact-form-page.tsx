@@ -43,6 +43,10 @@ const contactFormSchema = z.object({
   message: z.string().min(10, { message: "Message is required." }),
 });
 
+const MAX_FILE_SIZE = 1024 * 1024; // 1MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+
 const sellFormSchema = z.object({
   submitterName: z.string().min(2, { message: "Your name is required." }),
   submitterEmail: z.string().email({ message: "A valid email is required." }),
@@ -57,8 +61,17 @@ const sellFormSchema = z.object({
   size: z.coerce.number().int().min(100, { message: "Size must be at least 100 sqft." }),
   location: z.string().min(5, { message: "Location is required." }),
   amenities: z.array(z.string()).optional(),
-  featuredImage: z.any().optional(),
-  galleryImages: z.any().optional(),
+  featuredImage: z.any()
+    .refine((file) => file, "Featured image is required.")
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 1MB.`)
+    .refine(
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      ".jpg, .jpeg, .png and .webp files are accepted."
+    ),
+  galleryImages: z.any()
+    .optional()
+    .refine((files) => !files || Array.from(files).every((file: any) => file.size <= MAX_FILE_SIZE), `Max file size for each image is 1MB.`)
+    .refine((files) => !files || Array.from(files).every((file: any) => ACCEPTED_IMAGE_TYPES.includes(file.type)), ".jpg, .jpeg, .png and .webp files are accepted."),
 }).refine(data => {
     if (data.type === 'Other') {
       return !!data.otherType && data.otherType.length > 2;
@@ -288,7 +301,7 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                                 </label>
                             </div> 
                         </FormControl>
-                        <FormDescription>The main image for the property listing.</FormDescription>
+                        <FormDescription>The main image for the property listing. Max size: 1MB.</FormDescription>
                         <FormMessage />
                         </FormItem>
                     )}
@@ -310,7 +323,7 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
                                 </label>
                             </div> 
                         </FormControl>
-                        <FormDescription>Select additional images for the gallery.</FormDescription>
+                        <FormDescription>Select additional images for the gallery. Max size per image: 1MB.</FormDescription>
                         <FormMessage />
                         </FormItem>
                     )}
@@ -399,4 +412,3 @@ export function ContactFormPage({ isSellPage = false }: { isSellPage?: boolean }
     </div>
   );
 }
-

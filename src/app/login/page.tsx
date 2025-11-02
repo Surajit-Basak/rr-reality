@@ -1,14 +1,20 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useAuth, useFirestore, useUser } from "@/firebase";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useToast } from '@/hooks/use-toast';
+import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+
+// ONE-TIME SCRIPT: Configuration for the master admin
+const MASTER_ADMIN_EMAIL = "surajitbasak2023@gmail.com";
+const MASTER_ADMIN_PASS = "123456";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -16,16 +22,77 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const auth = useAuth();
+  const firestore = useFirestore();
+  const { user, isUserLoading } = useUser();
   const { toast } = useToast();
+
+  // ONE-TIME SCRIPT to create master admin on first load
+  useEffect(() => {
+    const createMasterAdmin = async () => {
+      if (firestore) {
+        try {
+          // We can't query for a user by email client-side, so we can't truly know if the user exists.
+          // This script will attempt to create the user. If it fails because the email is already in use,
+          // it will just log to the console, which is acceptable for this one-time setup.
+          const tempAuth = getAuth();
+          const userCredential = await createUserWithEmailAndPassword(tempAuth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS);
+          const masterUser = userCredential.user;
+
+          const userDocRef = doc(firestore, "users", masterUser.uid);
+
+          // Check if document already exists, just in case.
+          const docSnap = await getDoc(userDocRef);
+
+          if (!docSnap.exists()) {
+             await setDoc(userDocRef, {
+                uid: masterUser.uid,
+                email: masterUser.email,
+                displayName: "Master Admin",
+                role: "master-admin",
+                createdAt: serverTimestamp(),
+            });
+            console.log("Master admin user created in Firestore.");
+            toast({ title: "Setup", description: "Master admin account created." });
+          }
+           // Sign the temporary user out
+          await tempAuth.signOut();
+
+        } catch (error: any) {
+          if (error.code === 'auth/email-already-in-use') {
+            console.log("Master admin email already exists. Skipping creation.");
+          } else {
+            console.error("Error creating master admin:", error);
+          }
+        }
+      }
+    };
+    createMasterAdmin();
+  }, [firestore, toast]);
+
+
+  useEffect(() => {
+      if (!isUserLoading && user) {
+          router.push('/admin');
+      }
+  }, [isUserLoading, user, router]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
+    if (!auth) {
+        toast({
+            variant: "destructive",
+            title: "Sign In Failed",
+            description: "Authentication service not available.",
+        });
+        setIsLoading(false);
+        return;
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // onAuthStateChanged will handle the redirect via AuthGuard
-      router.push('/admin');
+      // AuthGuard will handle redirect on successful login
     } catch (error: any) {
       console.error('Sign in error:', error);
       toast({
@@ -36,6 +103,14 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+  
+  if (isUserLoading || user) {
+    return (
+        <div className="flex items-center justify-center min-h-screen">
+            <p>Loading...</p>
+        </div>
+    )
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-muted/40">

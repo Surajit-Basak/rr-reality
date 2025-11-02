@@ -28,7 +28,7 @@ export default function AdminLayout({
   const adminAvatar = PlaceHolderImages.find(p => p.id === 'agent-2');
 
   return (
-    <AuthGuard>
+    <AuthGuard role="admin">
         <SidebarProvider>
         <div className="flex min-h-screen">
             <Sidebar collapsible="icon" className="border-r">
@@ -87,7 +87,7 @@ export default function AdminLayout({
                         <h1 className="text-xl font-semibold">Admin Dashboard</h1>
                     </div>
                     <Button variant="ghost" size="icon" asChild>
-                        <Link href="#">
+                        <Link href="/admin/settings">
                             <Avatar className="h-8 w-8">
                                 {adminAvatar && <AvatarImage src={adminAvatar.imageUrl} />}
                                 <AvatarFallback>A</AvatarFallback>

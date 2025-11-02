@@ -32,7 +32,7 @@ export default function LoginPage() {
       }
   }, [isUserLoading, user, router]);
 
-  const handleSignIn = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -46,52 +46,57 @@ export default function LoginPage() {
         return;
     }
 
-    signInWithEmailAndPassword(auth, email, password)
-      .catch((error: any) => {
-        // Special "upsert" logic for the master admin on first login
-        if (email === MASTER_ADMIN_EMAIL && error.code === 'auth/user-not-found') {
-          createUserWithEmailAndPassword(auth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS)
-            .then(userCredential => {
-              const masterUser = userCredential.user;
-              const profileDocRef = doc(firestore, 'users', masterUser.uid);
-              // Directly create the user document. The onAuthStateChanged listener will handle the redirect.
-              return setDoc(profileDocRef, {
-                uid: masterUser.uid,
-                email: masterUser.email,
-                displayName: "Master Admin",
-                role: "master-admin",
-                createdAt: serverTimestamp(),
-              });
-            })
-            .then(() => {
-                // The onAuthStateChanged listener in useUser will now redirect to /admin
-            })
-            .catch(creationError => {
-              toast({
-                variant: "destructive",
-                title: "Admin Setup Failed",
-                description: `Could not create the master admin account: ${creationError.message}`,
-              });
-            });
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        // On success, the useEffect hook will handle the redirect.
+    } catch (error: any) {
+        if (email === MASTER_ADMIN_EMAIL && password === MASTER_ADMIN_PASS && error.code === 'auth/user-not-found') {
+            // If it's the master admin and the user doesn't exist, create them.
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const masterUser = userCredential.user;
+                const profileDocRef = doc(firestore, 'users', masterUser.uid);
+                
+                // Use the non-blocking function to ensure the document is created.
+                setDocumentNonBlocking(profileDocRef, {
+                    uid: masterUser.uid,
+                    email: masterUser.email,
+                    displayName: "Master Admin",
+                    role: "master-admin",
+                    createdAt: serverTimestamp(),
+                }, {});
 
+                // The onAuthStateChanged listener in useUser will now have the user
+                // and the useEffect will redirect to /admin.
+                toast({
+                    title: "Admin Account Created",
+                    description: "Welcome! Redirecting you to the dashboard.",
+                });
+
+            } catch (creationError: any) {
+                toast({
+                    variant: "destructive",
+                    title: "Admin Setup Failed",
+                    description: `Could not create the master admin account: ${creationError.message}`,
+                });
+            }
         } else {
+            // Handle standard login errors
             let description = "An unknown error occurred. Please try again.";
             if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
               description = "The email or password you entered is incorrect. Please try again.";
             } else if (error.code === 'auth/user-not-found') {
                 description = "No user found with this email address."
             }
-
             toast({
               variant: "destructive",
               title: "Sign In Failed",
               description: description,
             });
         }
-      })
-      .finally(() => {
+    } finally {
         setIsLoading(false);
-      });
+    }
   };
   
   if (isUserLoading || user) {

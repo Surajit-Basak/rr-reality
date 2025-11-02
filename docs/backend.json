@@ -1,0 +1,308 @@
+{
+  "entities": {
+    "Property": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Property",
+      "type": "object",
+      "description": "Represents a real estate property for sale or rent.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Property entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the property listing."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the property."
+        },
+        "propertyType": {
+          "type": "string",
+          "description": "Type of property (e.g., House, Apartment, Condo)."
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the property (e.g., For Sale, For Rent)."
+        },
+        "price": {
+          "type": "number",
+          "description": "Price of the property."
+        },
+        "bedrooms": {
+          "type": "number",
+          "description": "Number of bedrooms in the property."
+        },
+        "bathrooms": {
+          "type": "number",
+          "description": "Number of bathrooms in the property."
+        },
+        "propertySize": {
+          "type": "number",
+          "description": "Size of the property in square feet/meters."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location of the property (e.g., address, neighborhood)."
+        },
+        "amenities": {
+          "type": "array",
+          "description": "Array of amenities offered by the property.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "imageUrls": {
+          "type": "array",
+          "description": "Array of URLs for property images.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "propertyType",
+        "status",
+        "price",
+        "bedrooms",
+        "bathrooms",
+        "propertySize",
+        "location",
+        "amenities",
+        "imageUrls"
+      ]
+    },
+    "Inquiry": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Inquiry",
+      "type": "object",
+      "description": "Represents a user inquiry about a property.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Inquiry entity."
+        },
+        "propertyId": {
+          "type": "string",
+          "description": "Reference to Property. (Relationship: Property 1:N Inquiry)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the person making the inquiry."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the person making the inquiry.",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number of the person making the inquiry."
+        },
+        "message": {
+          "type": "string",
+          "description": "Message from the person making the inquiry."
+        },
+        "inquiryDate": {
+          "type": "string",
+          "description": "Date and time the inquiry was made.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "propertyId",
+        "name",
+        "email",
+        "phone",
+        "message",
+        "inquiryDate"
+      ]
+    },
+    "BlogPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "BlogPost",
+      "type": "object",
+      "description": "Represents a blog post on the website.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the BlogPost entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the blog post."
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the blog post."
+        },
+        "author": {
+          "type": "string",
+          "description": "Author of the blog post."
+        },
+        "publicationDate": {
+          "type": "string",
+          "description": "Date the blog post was published.",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags associated with the blog post.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the blog post's main image."
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "content",
+        "author",
+        "publicationDate",
+        "tags",
+        "imageUrl"
+      ]
+    },
+    "PageContent": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PageContent",
+      "type": "object",
+      "description": "Represents content for a specific page on the website.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the PageContent entity."
+        },
+        "pageName": {
+          "type": "string",
+          "description": "Name of the page (e.g., 'Homepage', 'About Us')."
+        },
+        "content": {
+          "type": "string",
+          "description": "HTML or text content of the page."
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "Date and time the page content was last updated.",
+          "format": "date-time"
+        },
+        "seoTitle": {
+          "type": "string",
+          "description": "SEO title for the page."
+        },
+        "seoDescription": {
+          "type": "string",
+          "description": "SEO description for the page."
+        }
+      },
+      "required": [
+        "id",
+        "pageName",
+        "content",
+        "lastUpdated",
+        "seoTitle",
+        "seoDescription"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/properties/{propertyId}",
+        "definition": {
+          "entityName": "Property",
+          "schema": {
+            "$ref": "#/backend/entities/Property"
+          },
+          "description": "Stores property data. Publicly readable, but write access is restricted to admins.",
+          "params": [
+            {
+              "name": "propertyId",
+              "description": "Unique identifier for the property."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/inquiries/{inquiryId}",
+        "definition": {
+          "entityName": "Inquiry",
+          "schema": {
+            "$ref": "#/backend/entities/Inquiry"
+          },
+          "description": "Stores user inquiries related to properties. Read access restricted to admins.",
+          "params": [
+            {
+              "name": "inquiryId",
+              "description": "Unique identifier for the inquiry."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/blog_posts/{blogPostId}",
+        "definition": {
+          "entityName": "BlogPost",
+          "schema": {
+            "$ref": "#/backend/entities/BlogPost"
+          },
+          "description": "Stores blog posts. Publicly readable, write access restricted to admins.",
+          "params": [
+            {
+              "name": "blogPostId",
+              "description": "Unique identifier for the blog post."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/page_content/{pageContentId}",
+        "definition": {
+          "entityName": "PageContent",
+          "schema": {
+            "$ref": "#/backend/entities/PageContent"
+          },
+          "description": "Stores content for various pages of the website. Publicly readable, write access restricted to admins.",
+          "params": [
+            {
+              "name": "pageContentId",
+              "description": "Unique identifier for the page content."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "user",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Collection used for DBAC. The existence of a document here grants admin privileges. The document itself can be empty.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "User ID of the administrator."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to support the RR Realty Hub application, focusing on properties, inquiries, blog posts, and page content. It prioritizes security, scalability, and ease of debugging based on the core design principles. Authorization Independence is achieved by avoiding hierarchical authorization dependencies and structuring data to facilitate simple and robust security rules. The structure supports secure list operations and maintains the integrity of ownership, timestamps, and denormalized data.\n\n*   **/properties Collection:** Stores property data. Publicly accessible for reading, but write access is restricted to admins. No denormalization is needed as authorization doesn't depend on related data.\n*   **/inquiries Collection:** Stores user inquiries related to properties.  Inquiries are stored in a flat collection to avoid hierarchical dependencies.  Authorization to read is restricted to admins.\n*   **/blog_posts Collection:** Stores blog posts. Publicly readable, with write access restricted to admins.\n*   **/page_content Collection:** Stores content for various pages of the website. Publicly readable, with write access restricted to admins.\n*   **/roles_admin/{uid} Collection:** Used for DBAC. The existence of a document in this collection grants admin privileges.\n\nThis structure facilitates Authorization Independence by avoiding `get()` calls in security rules. QAPs (Rules are not Filters) are supported by segregating data with different access requirements into separate collections (e.g., properties, inquiries, blog posts, and page content). Admins are managed via a dedicated `/roles_admin/{uid}` collection, enabling simple existence-based rules."
+  }
+}

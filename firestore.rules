@@ -1,0 +1,129 @@
+/**
+ * @fileOverview Firestore Security Rules for RR Realty Hub.
+ *
+ * Core Philosophy:
+ * This ruleset implements a role-based access control model, with public read access for certain collections and restricted write access to administrative users.
+ *
+ * Data Structure:
+ * - /properties/{propertyId}: Stores property data.
+ * - /inquiries/{inquiryId}: Stores user inquiries.
+ * - /blog_posts/{blogPostId}: Stores blog posts.
+ * - /page_content/{pageContentId}: Stores page content.
+ * - /roles_admin/{userId}: Indicates admin privileges.
+ *
+ * Key Security Decisions:
+ * - Public read access is granted for the 'properties', 'blog_posts', and 'page_content' collections.
+ * - Write access to all collections except 'roles_admin' is restricted to users with admin privileges, as determined by the presence of a document in the `/roles_admin/{userId}` collection.
+ * - The 'roles_admin' collection allows creating a document with the user's ID, granting admin privileges. Deleting the document removes admin privileges.
+ * - Data validation is minimal, focusing on authorization and relational integrity rather than comprehensive schema enforcement.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Checks if the user is signed in.
+     * @returns {boolean} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the user is an admin.
+     * @returns {boolean} True if the user has a document in the /roles_admin/{userId} collection.
+     */
+    function isAdmin() {
+      return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    /**
+     * @description Checks if the user is the owner of the resource, based on user ID.
+     * @param {string} userId - The user ID to check against.
+     * @returns {boolean} True if the request's auth UID matches the provided userId.
+     */
+    function isOwner(userId) {
+        return request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the user is the owner of the existing resource.
+     * @param {string} userId - The user ID to check against.
+     * @returns {boolean} True if the request's auth UID matches the provided userId and the resource exists.
+     */
+    function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Rules for the /properties/{propertyId} collection.
+     * @path /properties/{propertyId}
+     * @allow (get, list): Anyone can read property data.
+     * @allow (create, update, delete): Only admins can write property data.
+     * @deny (create, update, delete): Non-admins cannot modify property data.
+     * @principle Allows public read access, restricts write access to admins.
+     */
+    match /properties/{propertyId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    /**
+     * @description Rules for the /inquiries/{inquiryId} collection.
+     * @path /inquiries/{inquiryId}
+     * @allow (get, list): Only admins can read inquiries.
+     * @allow (create): Any signed-in user can create an inquiry.
+     * @allow (update, delete): Only admins can modify inquiries.
+     * @deny (get, list): Non-admins cannot read inquiries.
+     * @deny (update, delete): Non-admins cannot modify inquiries.
+     * @principle Restricts read access to admins, allows any signed in user to create, restricts updates and deletes to admins only.
+     */
+    match /inquiries/{inquiryId} {
+      allow get, list: if isAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    /**
+     * @description Rules for the /blog_posts/{blogPostId} collection.
+     * @path /blog_posts/{blogPostId}
+     * @allow (get, list): Anyone can read blog posts.
+     * @allow (create, update, delete): Only admins can write blog posts.
+     * @deny (create, update, delete): Non-admins cannot modify blog posts.
+     * @principle Allows public read access, restricts write access to admins.
+     */
+    match /blog_posts/{blogPostId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    /**
+     * @description Rules for the /page_content/{pageContentId} collection.
+     * @path /page_content/{pageContentId}
+     * @allow (get, list): Anyone can read page content.
+     * @allow (create, update, delete): Only admins can write page content.
+     * @deny (create, update, delete): Non-admins cannot modify page content.
+     * @principle Allows public read access, restricts write access to admins.
+     */
+    match /page_content/{pageContentId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    /**
+     * @description Rules for the /roles_admin/{userId} collection.
+     * @path /roles_admin/{userId}
+     * @allow (get, list): No direct reads or lists. Existence is checked via the isAdmin() function.
+     * @allow (create): Allows a user to create a document with their own user ID, granting them admin privileges.
+     * @allow (update, delete): Only the user who created the admin role can modify it. This effectively allows granting and revoking admin privileges.
+     * @deny (create):  Deny create if the user ID does not match the authenticated user ID.
+     * @deny (update, delete): Non-owners cannot modify/delete admin roles.
+     * @principle Enables admin role management based on document existence.
+     */
+    match /roles_admin/{userId} {
+        allow get, list: if false;
+        allow create: if isOwner(userId);
+        allow update, delete: if isExistingOwner(userId);
+    }
+  }
+}

@@ -1,4 +1,5 @@
 
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Property } from "@/lib/types";
@@ -12,7 +13,9 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
-  const image = PlaceHolderImages.find(p => p.id === property.images[0]);
+  const imageObject = property.images[0];
+  const image = imageObject ? PlaceHolderImages.find(p => p.id === imageObject.id) : undefined;
+  
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -25,7 +28,15 @@ export function PropertyCard({ property }: PropertyCardProps) {
     <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full">
       <Link href={`/properties/${property.slug}`} className="block h-full flex flex-col">
         <div className="h-64 bg-cover bg-center relative">
-         {image && <Image src={image.imageUrl} alt={property.title} fill className="object-cover" data-ai-hint={image.imageHint} />}
+         {image && imageObject && (
+            <Image 
+              src={image.imageUrl} 
+              alt={imageObject.alt} 
+              fill 
+              className="object-cover" 
+              data-ai-hint={image.imageHint} 
+            />
+          )}
         </div>
         <div className="p-6 flex flex-col flex-grow">
           <div className="text-2xl font-bold text-primary mb-2">{formatPrice(property.price)}</div>

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { notFound } from "next/navigation";
@@ -50,7 +51,11 @@ export default function PropertyDetailPage({ params }: Props) {
   }
 
   const agentImage = PlaceHolderImages.find(p => p.id === property.agent.avatar);
-  const propertyImages = property.images.map(id => PlaceHolderImages.find(p => p.id === id)).filter(Boolean);
+  const propertyImages = property.images.map(imgObj => {
+    const placeholder = PlaceHolderImages.find(p => p.id === imgObj.id);
+    return placeholder ? { ...placeholder, alt: imgObj.alt } : null;
+  }).filter(Boolean);
+  
   const mapImage = PlaceHolderImages.find(p => p.id === 'map-placeholder');
 
   // Note: Related properties logic would need to be updated to fetch from Firestore.
@@ -79,7 +84,7 @@ export default function PropertyDetailPage({ params }: Props) {
                 {propertyImages.map((image, index) => image && (
                   <CarouselItem key={index}>
                     <div className="aspect-video relative">
-                      <Image src={image.imageUrl} alt={`${property.title} - image ${index + 1}`} fill className="object-cover" data-ai-hint={image.imageHint} />
+                      <Image src={image.imageUrl} alt={image.alt} fill className="object-cover" data-ai-hint={image.imageHint} />
                     </div>
                   </CarouselItem>
                 ))}

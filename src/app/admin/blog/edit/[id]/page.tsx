@@ -27,13 +27,18 @@ import type { BlogPost } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 
+const imageObjectSchema = z.object({
+    id: z.string(),
+    alt: z.string().min(1, "Alt text is required."),
+});
+
 const formSchema = z.object({
     title: z.string().min(5, { message: "Title must be at least 5 characters." }),
     slug: z.string().min(3, { message: "Slug must be at least 3 characters." }).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Slug must be lowercase and contain only letters, numbers, and hyphens."}),
     content: z.string().min(50, { message: "Content must be at least 50 characters." }),
     author: z.string().min(2, { message: "Author name is required." }),
     tags: z.string().transform(val => val.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)),
-    imageUrl: z.string().min(1, { message: "Please select an image." }),
+    imageUrl: imageObjectSchema,
     seoTitle: z.string().optional(),
     seoDescription: z.string().optional(),
 });
@@ -66,6 +71,14 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
             });
         }
     }, [blogPost, form]);
+    
+    const handleImageChange = (imageId: string) => {
+        const image = availableImages.find(img => img.id === imageId);
+        if (image) {
+            const title = form.getValues('title') || 'Blog post';
+            form.setValue('imageUrl', { id: imageId, alt: `${title} - ${image.description}` }, { shouldValidate: true });
+        }
+    }
 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -222,8 +235,8 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
                                 <FormLabel>Featured Image</FormLabel>
                                 <FormControl>
                                     <RadioGroup
-                                        onValueChange={field.onChange}
-                                        value={field.value}
+                                        onValueChange={handleImageChange}
+                                        value={field.value?.id || ''}
                                         className="grid grid-cols-3 md:grid-cols-5 gap-4"
                                     >
                                         {availableImages.map(image => (
@@ -238,6 +251,18 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
                                         ))}
                                     </RadioGroup>
                                 </FormControl>
+                                 {field.value?.id && (
+                                     <div className="space-y-2 pt-4">
+                                        <FormLabel>Image Alt Text</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                value={field.value.alt}
+                                                onChange={(e) => form.setValue('imageUrl.alt', e.target.value)}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>Describe the image for accessibility and SEO.</FormDescription>
+                                    </div>
+                                )}
                                 <FormMessage />
                                 </FormItem>
                             )}

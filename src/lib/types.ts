@@ -11,6 +11,11 @@ export type UserProfile = {
   createdAt: any;
 }
 
+export type ImageObject = {
+  id: string;
+  alt: string;
+}
+
 export type Property = {
   id: string;
   title: string;
@@ -25,7 +30,7 @@ export type Property = {
   bathrooms: number;
   size: number; // in sqft
   amenities: string[];
-  images: string[]; // image ids from placeholder-images.json
+  images: ImageObject[]; // Now an array of objects
   agent: {
     name: string;
     avatar: string; // image id
@@ -80,7 +85,7 @@ export type BlogPost = {
       toDate: () => Date;
     }; // Using `any` for Firestore serverTimestamp
     tags: string[];
-    imageUrl: string;
+    imageUrl: ImageObject; // Now an object
     seoTitle?: string;
     seoDescription?: string;
 };

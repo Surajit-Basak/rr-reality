@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { notFound } from "next/navigation";
@@ -72,7 +73,7 @@ export default function BlogPostPage({ params }: Props) {
     notFound();
   }
 
-  const image = PlaceHolderImages.find(p => p.id === post.imageUrl);
+  const imagePlaceholder = post.imageUrl ? PlaceHolderImages.find(p => p.id === post.imageUrl.id) : undefined;
 
   return (
     <div className="bg-white">
@@ -99,9 +100,9 @@ export default function BlogPostPage({ params }: Props) {
             </div>
           </header>
 
-          {image && (
+          {imagePlaceholder && post.imageUrl && (
             <div className="relative h-[50vh] w-full rounded-lg overflow-hidden mb-12 shadow-lg">
-              <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />
+              <Image src={imagePlaceholder.imageUrl} alt={post.imageUrl.alt} fill className="object-cover" data-ai-hint={imagePlaceholder.imageHint} />
             </div>
           )}
           

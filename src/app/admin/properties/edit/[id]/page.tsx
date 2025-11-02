@@ -36,6 +36,11 @@ import { Property } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 
+const imageObjectSchema = z.object({
+    id: z.string(),
+    alt: z.string().min(1, "Alt text is required."),
+});
+
 const formSchema = z.object({
     title: z.string().min(5, { message: "Title must be at least 5 characters." }),
     slug: z.string().min(3, { message: "Slug must be at least 3 characters." }).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Slug must be lowercase and contain only letters, numbers, and hyphens."}),
@@ -48,7 +53,7 @@ const formSchema = z.object({
     size: z.coerce.number().int().min(100, { message: "Size must be at least 100 sqft." }),
     location: z.string().min(5, { message: "Location is required." }),
     amenities: z.array(z.string()).optional(),
-    images: z.array(z.string()).min(1, { message: "Please select at least one image." }),
+    images: z.array(imageObjectSchema).min(1, { message: "Please select at least one image and provide alt text." }),
     featured: z.boolean().default(false),
     agent: z.object({
         name: z.string(),
@@ -125,6 +130,7 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
     }
     
     const availableImages = PlaceHolderImages.filter(p => p.id.startsWith('property-'));
+    const selectedImageIds = form.watch('images')?.map(img => img.id) || [];
 
     if (isLoading) {
         return (
@@ -363,42 +369,58 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
                                 </FormItem>
                             )}
                         />
-                        <FormField
+                         <FormField
                             control={form.control}
                             name="images"
-                            render={() => (
+                            render={({ field }) => (
                                 <FormItem>
                                 <div className="mb-4">
                                     <FormLabel className="text-base">Property Images</FormLabel>
-                                    <FormDescription>Select images for the property gallery. The first selected image will be the main image.</FormDescription>
+                                    <FormDescription>Select images and provide alt text. The first selected image will be the main image.</FormDescription>
                                 </div>
-                                <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
-                                    {availableImages.map((image) => (
-                                    <FormField
-                                        key={image.id}
-                                        control={form.control}
-                                        name="images"
-                                        render={({ field }) => {
-                                        return (
-                                            <FormItem key={image.id} className="relative aspect-square">
-                                                <FormControl>
-                                                    <Checkbox
-                                                        className="absolute top-2 right-2 z-10 h-5 w-5 bg-background"
-                                                        checked={field.value?.includes(image.id)}
-                                                        onCheckedChange={(checked) => {
-                                                            return checked
-                                                            ? field.onChange([...(field.value || []), image.id])
-                                                            : field.onChange(
-                                                                field.value?.filter((value) => value !== image.id)
-                                                            )
-                                                        }}
+                                <div className="space-y-4">
+                                    {form.watch('images')?.map((imageObj, index) => {
+                                        const image = availableImages.find(img => img.id === imageObj.id);
+                                        return image ? (
+                                            <div key={imageObj.id} className="flex items-center gap-4 p-2 border rounded-lg">
+                                                <img src={image.imageUrl} alt={image.description} className="w-20 h-20 object-cover rounded-md" />
+                                                <div className="flex-1">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`images.${index}.alt`}
+                                                        render={({ field: altField }) => (
+                                                            <FormItem>
+                                                                <FormLabel>Alt Text</FormLabel>
+                                                                <FormControl>
+                                                                    <Input {...altField} />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
                                                     />
-                                                </FormControl>
-                                                <img src={image.imageUrl} alt={image.description} className="w-full h-full object-cover rounded-md" />
-                                            </FormItem>
-                                        )
-                                        }}
-                                    />
+                                                </div>
+                                            </div>
+                                        ) : null;
+                                    })}
+                                </div>
+                                <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4 mt-4">
+                                    {availableImages.map((image) => (
+                                    <div key={image.id} className="relative aspect-square">
+                                        <Checkbox
+                                            className="absolute top-2 right-2 z-10 h-5 w-5 bg-background"
+                                            checked={selectedImageIds.includes(image.id)}
+                                            onCheckedChange={(checked) => {
+                                                const currentImages = field.value || [];
+                                                if (checked) {
+                                                    const newImage = { id: image.id, alt: `${form.getValues('title')} - ${image.description}` };
+                                                    field.onChange([...currentImages, newImage]);
+                                                } else {
+                                                    field.onChange(currentImages.filter((img) => img.id !== image.id));
+                                                }
+                                            }}
+                                        />
+                                        <img src={image.imageUrl} alt={image.description} className="w-full h-full object-cover rounded-md" />
+                                    </div>
                                     ))}
                                 </div>
                                 <FormMessage />

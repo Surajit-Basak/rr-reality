@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from "next/link";
@@ -12,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function BlogListPage() {
   const firestore = useFirestore();
-  const heroImage = PlaceHolderImages.find(p => p.id === 'blog-1');
+  const heroImagePlaceholder = PlaceHolderImages.find(p => p.id === 'blog-1');
 
   const blogPostsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -24,13 +25,13 @@ export default function BlogListPage() {
   return (
     <div>
         <section className="relative h-[50vh] flex items-center justify-center text-white">
-            {heroImage && (
+            {heroImagePlaceholder && (
                 <Image
-                    src={heroImage.imageUrl}
+                    src={heroImagePlaceholder.imageUrl}
                     alt="Real Estate Insights"
                     fill
                     className="object-cover"
-                    data-ai-hint={heroImage.imageHint}
+                    data-ai-hint={heroImagePlaceholder.imageHint}
                 />
             )}
             <div className="absolute inset-0 bg-black/50" />
@@ -58,11 +59,11 @@ export default function BlogListPage() {
                 ))
             ) : blogPosts && blogPosts.length > 0 ? (
                 blogPosts.map((post) => {
-                const image = PlaceHolderImages.find(p => p.id === post.imageUrl);
+                const image = PlaceHolderImages.find(p => p.id === post.imageUrl.id);
                 return (
                     <article key={post.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
                     <Link href={`/blog/${post.slug}`} className="block relative h-48 w-full">
-                        {image && <Image src={image.imageUrl} alt={post.title} fill className="object-cover" data-ai-hint={image.imageHint} />}
+                        {image && <Image src={image.imageUrl} alt={post.imageUrl.alt} fill className="object-cover" data-ai-hint={image.imageHint} />}
                     </Link>
                     <div className="p-6 flex flex-col flex-grow">
                         <div className="mb-2">
@@ -94,3 +95,4 @@ export default function BlogListPage() {
     </div>
   );
 }
+

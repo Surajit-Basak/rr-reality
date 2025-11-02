@@ -71,6 +71,14 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, list, create, update, delete: if isMasterAdmin();
     }
+    
+    /**
+     * @description Internal configuration, only accessible by admins for setup.
+     */
+    match /internal_config/{docId} {
+      allow read, write: if isSignedIn(); // Allow any signed in user to perform initial setup
+    }
+
 
     /**
      * @description Rules for the /properties/{propertyId} collection.

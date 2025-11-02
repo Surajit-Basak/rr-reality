@@ -7,10 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useAuth, useFirestore, useUser } from "@/firebase";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
+import { useAuth, useFirestore, useUser, addDocumentNonBlocking, setDocumentNonBlocking } from "@/firebase";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useToast } from '@/hooks/use-toast';
-import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp } from 'firebase/firestore';
 
 // ONE-TIME SCRIPT: Configuration for the master admin
 const MASTER_ADMIN_EMAIL = "surajitbasak2023@gmail.com";
@@ -29,58 +29,61 @@ export default function LoginPage() {
   // ONE-TIME SCRIPT to create master admin on first load
   useEffect(() => {
     const createMasterAdmin = async () => {
-      if (!firestore) return;
+      if (!firestore || !auth) return;
 
-      // Use a separate, temporary auth instance for this setup task
-      // to avoid interfering with the main app's auth state.
-      const tempAuth = getAuth();
-      const userDocRef = doc(firestore, "users", "master_admin_setup_flag");
+      const setupFlagRef = doc(firestore, "internal_config", "master_admin_setup");
 
       try {
-        const setupFlag = await getDoc(userDocRef);
+        const setupFlag = await getDoc(setupFlagRef);
         if (setupFlag.exists()) {
-          // The script has already run successfully.
+          console.log("Master admin setup already completed. Skipping.");
           return;
         }
 
-        // Attempt to create the user.
-        const userCredential = await createUserWithEmailAndPassword(tempAuth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS);
+        console.log("Running master admin setup script...");
+        
+        const userCredential = await createUserWithEmailAndPassword(auth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS);
         const masterUser = userCredential.user;
+        console.log("Master admin user created in Firebase Auth:", masterUser.uid);
 
-        // Create the user profile in Firestore.
         const profileDocRef = doc(firestore, 'users', masterUser.uid);
-        await setDoc(profileDocRef, {
+        await setDocumentNonBlocking(profileDocRef, {
           uid: masterUser.uid,
           email: masterUser.email,
           displayName: "Master Admin",
           role: "master-admin",
           createdAt: serverTimestamp(),
-        });
+        }, {});
         
-        console.log("Master admin user created in Firestore.");
-        toast({ title: "Setup Complete", description: "Master admin account has been created." });
+        console.log("Master admin user profile created in Firestore.");
 
         // Set the flag to prevent this script from running again.
-        await setDoc(userDocRef, { completed: true });
+        await setDocumentNonBlocking(setupFlagRef, { completed: true, completedAt: serverTimestamp() }, {});
+        console.log("Master admin setup flag set. Setup complete.");
+
+        toast({ title: "Setup Complete", description: "Master admin account has been created." });
+
+        // Sign out the newly created user so the login form is ready
+        await auth.signOut();
 
       } catch (error: any) {
         if (error.code === 'auth/email-already-in-use') {
-          console.log("Master admin email already exists. Assuming setup is complete.");
-          // Set the flag to prevent this script from running again.
-           await setDoc(userDocRef, { completed: true });
+          console.log("Master admin email already exists. Assuming setup is complete and setting flag.");
+           // Set the flag to prevent this script from running again if it failed midway before.
+           await setDocumentNonBlocking(setupFlagRef, { completed: true, completedAt: serverTimestamp() }, {});
         } else {
-          console.error("Error during master admin setup:", error);
-        }
-      } finally {
-        // Ensure the temporary user is signed out, leaving the main auth state clean.
-        if (tempAuth.currentUser) {
-          await signOut(tempAuth);
+          console.error("Critical error during master admin setup:", error);
+          toast({
+            variant: "destructive",
+            title: "Admin Setup Failed",
+            description: "Could not create the initial master admin account.",
+          });
         }
       }
     };
 
     createMasterAdmin();
-  }, [firestore, toast]);
+  }, [firestore, auth, toast]);
 
 
   useEffect(() => {
@@ -108,10 +111,14 @@ export default function LoginPage() {
       // AuthGuard will handle redirect on successful login
     } catch (error: any) {
       console.error('Sign in error:', error);
+      let description = "Invalid credentials. Please check your email and password and try again.";
+      if (error.code === 'auth/user-not-found') {
+        description = "No user found with this email address."
+      }
       toast({
         variant: "destructive",
         title: "Sign In Failed",
-        description: "Invalid credentials. Please check your email and password and try again.",
+        description: description,
       });
       setIsLoading(false);
     }
@@ -166,4 +173,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

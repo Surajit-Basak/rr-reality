@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,8 +35,9 @@ import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
     title: z.string().min(5, { message: "Title must be at least 5 characters." }),
+    slug: z.string().min(3, { message: "Slug must be at least 3 characters." }).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Slug must be lowercase and contain only letters, numbers, and hyphens."}),
     description: z.string().min(20, { message: "Description must be at least 20 characters." }),
-    type: z.enum(["House", "Apartment", "Condo", "Land"]),
+    type: z.enum(["House", "Apartment", "Condo", "Land", "Townhouse", "Multi-Family", "Other"]),
     status: z.enum(["For Sale", "For Rent"]),
     price: z.coerce.number().min(1, { message: "Price must be a positive number." }),
     bedrooms: z.coerce.number().int().min(0),
@@ -49,6 +51,8 @@ const formSchema = z.object({
         name: z.string(),
         avatar: z.string(),
     }),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
 });
 
 export default function NewPropertyPage() {
@@ -60,6 +64,7 @@ export default function NewPropertyPage() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
+            slug: "",
             description: "",
             type: "House",
             status: "For Sale",
@@ -71,13 +76,25 @@ export default function NewPropertyPage() {
             amenities: [],
             images: [],
             featured: false,
-            // Hardcoding agent for now. This could be dynamic in a more complex app.
             agent: {
                 name: "Jane Doe",
                 avatar: "agent-1",
-            }
+            },
+            seoTitle: "",
+            seoDescription: "",
         },
     });
+    
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        form.setValue("title", e.target.value);
+        const slug = e.target.value
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-');
+        form.setValue("slug", slug);
+    };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         if (!firestore) {
@@ -111,7 +128,6 @@ export default function NewPropertyPage() {
         }
     }
     
-    // For simplicity, we're using all placeholder images for selection.
     const availableImages = PlaceHolderImages.filter(p => p.id.startsWith('property-'));
 
     return (
@@ -122,19 +138,35 @@ export default function NewPropertyPage() {
             <CardContent>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Title</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="e.g., Modern Family Home in Suburbia" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="grid md:grid-cols-2 gap-8">
+                            <FormField
+                                control={form.control}
+                                name="title"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Property Title</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="e.g., Modern Family Home in Suburbia" {...field} onChange={handleTitleChange} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="slug"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>URL Slug</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="auto-generated-from-title" {...field} />
+                                        </FormControl>
+                                        <FormDescription>Unique URL-friendly identifier for the property.</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                         <FormField
                             control={form.control}
                             name="description"
@@ -164,6 +196,9 @@ export default function NewPropertyPage() {
                                         <SelectItem value="Apartment">Apartment</SelectItem>
                                         <SelectItem value="Condo">Condo</SelectItem>
                                         <SelectItem value="Land">Land</SelectItem>
+                                        <SelectItem value="Townhouse">Townhouse</SelectItem>
+                                        <SelectItem value="Multi-Family">Multi-Family</SelectItem>
+                                        <SelectItem value="Other">Other</SelectItem>
                                     </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -362,6 +397,43 @@ export default function NewPropertyPage() {
                             )}
                         />
 
+                        <div className="space-y-4 p-4 border rounded-lg">
+                            <h3 className="font-medium text-lg">SEO Settings</h3>
+                             <FormField
+                                control={form.control}
+                                name="seoTitle"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>SEO Title</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} placeholder="Custom title for search engines" />
+                                        </FormControl>
+                                        <FormDescription>
+                                            If empty, the property title will be used.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="seoDescription"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>SEO Description</FormLabel>
+                                        <FormControl>
+                                            <Textarea {...field} placeholder="Custom description for search engines" />
+                                        </FormControl>
+                                        <FormDescription>
+                                            A short summary of the property (around 155 characters).
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+
                         <Button type="submit" disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting ? "Creating..." : "Create Property"}
                         </Button>
@@ -371,3 +443,5 @@ export default function NewPropertyPage() {
         </Card>
     );
 }
+
+    

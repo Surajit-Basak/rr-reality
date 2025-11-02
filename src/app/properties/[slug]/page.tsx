@@ -3,8 +3,8 @@
 
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { useDoc, useFirestore, useMemoFirebase } from "@/firebase";
-import { doc } from "firebase/firestore";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, doc, query, where, limit } from "firebase/firestore";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,24 +14,35 @@ import { Button } from "@/components/ui/button";
 import { BedDouble, Bath, Square, MapPin, Phone, Mail, CheckCircle } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { PropertyCard } from "@/components/property-card";
-import { InquiryForm } from "./inquiry-form";
+import { InquiryForm } from "../inquiry-form";
 import type { Property } from "@/lib/types";
 
 type Props = {
-  params: { id: string };
+  params: { slug: string };
 };
 
 export default function PropertyDetailPage({ params }: Props) {
   const firestore = useFirestore();
-  const propertyRef = useMemoFirebase(() => {
-    if (!firestore || !params.id) return null;
-    return doc(firestore, 'properties', params.id);
-  }, [firestore, params.id]);
+  
+  const propertyQuery = useMemoFirebase(() => {
+    if (!firestore || !params.slug) return null;
+    return query(collection(firestore, 'properties'), where('slug', '==', params.slug), limit(1));
+  }, [firestore, params.slug]);
 
-  const { data: property, isLoading } = useDoc<Property>(propertyRef);
+  const { data: properties, isLoading } = useCollection<Property>(propertyQuery);
+  const property = properties?.[0];
+
+  // Dynamically set page title and description
+  if (property) {
+      document.title = property.seoTitle || property.title;
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+          metaDescription.setAttribute('content', property.seoDescription || property.description.substring(0, 160));
+      }
+  }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // TODO: Add proper skeleton
   }
 
   if (!property) {
@@ -180,3 +191,5 @@ export default function PropertyDetailPage({ params }: Props) {
     </div>
   );
 }
+
+    

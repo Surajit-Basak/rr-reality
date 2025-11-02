@@ -122,7 +122,7 @@ export default function AdminDashboard() {
                       <TableCell>{formatPrice(property.price)}</TableCell>
                       <TableCell>
                         <Button asChild variant="outline" size="sm">
-                          <Link href={`/properties/${property.id}`}>
+                          <Link href={`/properties/${property.slug}`}>
                             View
                             <ArrowUpRight className="h-4 w-4 ml-2" />
                           </Link>
@@ -145,3 +145,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+    

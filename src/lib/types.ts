@@ -14,6 +14,7 @@ export type UserProfile = {
 export type Property = {
   id: string;
   title: string;
+  slug: string;
   description: string;
   status: 'For Sale' | 'For Rent';
   type: 'House' | 'Apartment' | 'Condo' | 'Land' | 'Townhouse' | 'Multi-Family' | 'Other';
@@ -31,6 +32,8 @@ export type Property = {
   };
   featured: boolean;
   createdAt: any; // Using `any` for Firestore serverTimestamp
+  seoTitle?: string;
+  seoDescription?: string;
 };
 
 export type PropertySubmission = {

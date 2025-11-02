@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Property } from "@/lib/types";
@@ -22,7 +23,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full">
-      <Link href={`/properties/${property.id}`} className="block h-full flex flex-col">
+      <Link href={`/properties/${property.slug}`} className="block h-full flex flex-col">
         <div className="h-64 bg-cover bg-center relative">
          {image && <Image src={image.imageUrl} alt={property.title} fill className="object-cover" data-ai-hint={image.imageHint} />}
         </div>
@@ -54,3 +55,5 @@ export function PropertyCard({ property }: PropertyCardProps) {
     </div>
   );
 }
+
+    

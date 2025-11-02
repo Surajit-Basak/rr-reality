@@ -1,10 +1,10 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
+import { ConditionalLayout } from '@/components/conditional-layout';
 
 export const metadata: Metadata = {
   title: {
@@ -39,12 +39,10 @@ export default function RootLayout({
       </head>
       <body className={cn("font-body antialiased", "min-h-screen bg-background font-sans")}>
         <FirebaseClientProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-          <Toaster />
+            <ConditionalLayout>
+                {children}
+            </ConditionalLayout>
+            <Toaster />
         </FirebaseClientProvider>
       </body>
     </html>

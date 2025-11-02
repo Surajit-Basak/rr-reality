@@ -46,47 +46,48 @@ export default function LoginPage() {
         return;
     }
 
-    // Use a non-blocking sign-in attempt.
-    // The onAuthStateChanged listener in the useUser hook will handle success.
     signInWithEmailAndPassword(auth, email, password)
       .catch((error: any) => {
-        let description = "An unknown error occurred. Please try again.";
-        
-        if (error.code === 'auth/user-not-found') {
-          // If master admin email is used and user is not found, create it.
-          if (email === MASTER_ADMIN_EMAIL) {
-            createUserWithEmailAndPassword(auth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS)
-              .then(userCredential => {
-                const masterUser = userCredential.user;
-                const profileDocRef = doc(firestore, 'users', masterUser.uid);
-                setDocumentNonBlocking(profileDocRef, {
-                  uid: masterUser.uid,
-                  email: masterUser.email,
-                  displayName: "Master Admin",
-                  role: "master-admin",
-                  createdAt: serverTimestamp(),
-                }, {});
-                // Successful creation will trigger onAuthStateChanged and redirect.
-              })
-              .catch(creationError => {
-                toast({
-                  variant: "destructive",
-                  title: "Admin Setup Failed",
-                  description: `Could not create the master admin account: ${creationError.message}`,
-                });
+        // Special "upsert" logic for the master admin on first login
+        if (email === MASTER_ADMIN_EMAIL && error.code === 'auth/user-not-found') {
+          createUserWithEmailAndPassword(auth, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASS)
+            .then(userCredential => {
+              const masterUser = userCredential.user;
+              const profileDocRef = doc(firestore, 'users', masterUser.uid);
+              // Directly create the user document. The onAuthStateChanged listener will handle the redirect.
+              return setDoc(profileDocRef, {
+                uid: masterUser.uid,
+                email: masterUser.email,
+                displayName: "Master Admin",
+                role: "master-admin",
+                createdAt: serverTimestamp(),
               });
-            return; // Exit after attempting creation
-          }
-          description = "No user found with this email address.";
-        } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
-          description = "The email or password you entered is incorrect. Please try again.";
-        }
+            })
+            .then(() => {
+                // The onAuthStateChanged listener in useUser will now redirect to /admin
+            })
+            .catch(creationError => {
+              toast({
+                variant: "destructive",
+                title: "Admin Setup Failed",
+                description: `Could not create the master admin account: ${creationError.message}`,
+              });
+            });
 
-        toast({
-          variant: "destructive",
-          title: "Sign In Failed",
-          description: description,
-        });
+        } else {
+            let description = "An unknown error occurred. Please try again.";
+            if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+              description = "The email or password you entered is incorrect. Please try again.";
+            } else if (error.code === 'auth/user-not-found') {
+                description = "No user found with this email address."
+            }
+
+            toast({
+              variant: "destructive",
+              title: "Sign In Failed",
+              description: description,
+            });
+        }
       })
       .finally(() => {
         setIsLoading(false);

@@ -29,91 +29,91 @@ export default function AdminLayout({
 
   return (
     <AuthGuard role="admin">
-        <SidebarProvider>
+      <SidebarProvider>
         <div className="flex min-h-screen">
-            <Sidebar collapsible="icon" className="border-r">
+          <Sidebar collapsible="icon" className="border-r">
             <SidebarHeader>
-                <Link href="/admin" className="flex items-center gap-2 font-bold text-lg text-sidebar-foreground">
+              <Link href="/admin" className="flex items-center gap-2 font-bold text-lg text-sidebar-foreground">
                 <Building className="size-6 text-sidebar-primary" />
                 <span className="group-data-[collapsible=icon]:hidden">RR Realty Hub</span>
-                </Link>
+              </Link>
             </SidebarHeader>
             <SidebarContent>
-                <SidebarMenu>
+              <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin" tooltip="Dashboard">
+                  <SidebarMenuButton href="/admin" tooltip="Dashboard">
                     <LayoutDashboard />
                     <span>Dashboard</span>
-                    </SidebarMenuButton>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin/properties" tooltip="Properties">
+                  <SidebarMenuButton href="/admin/properties" tooltip="Properties">
                     <Home />
                     <span>Properties</span>
-                    </SidebarMenuButton>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin/submissions" tooltip="Submissions">
+                  <SidebarMenuButton href="/admin/submissions" tooltip="Submissions">
                     <Send />
                     <span>Submissions</span>
-                    </SidebarMenuButton>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin/inquiries" tooltip="Inquiries">
+                  <SidebarMenuButton href="/admin/inquiries" tooltip="Inquiries">
                     <MessageSquare />
                     <span>Inquiries</span>
-                    </SidebarMenuButton>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin/blog" tooltip="Blog Posts">
+                  <SidebarMenuButton href="/admin/blog" tooltip="Blog Posts">
                     <Newspaper />
                     <span>Blog Posts</span>
-                    </SidebarMenuButton>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin/media" tooltip="Media">
+                  <SidebarMenuButton href="/admin/media" tooltip="Media">
                     <GalleryHorizontal />
                     <span>Media</span>
-                    </SidebarMenuButton>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton href="/admin/settings" tooltip="Settings">
+                  <SidebarMenuButton href="/admin/settings" tooltip="Settings">
                     <Settings />
                     <span>Settings</span>
-                    </SidebarMenuButton>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
-                </SidebarMenu>
+              </SidebarMenu>
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <LogoutButton />
-                    </SidebarMenuItem>
-                </SidebarMenu>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <LogoutButton />
+                </SidebarMenuItem>
+              </SidebarMenu>
             </SidebarFooter>
-            </Sidebar>
-            <SidebarInset>
-                <header className="flex h-16 items-center justify-between border-b bg-background px-6 shrink-0">
-                    <div className="flex items-center gap-4">
-                        <SidebarTrigger />
-                        <h1 className="text-xl font-semibold">Admin Dashboard</h1>
-                    </div>
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href="/admin/settings">
-                            <Avatar className="h-8 w-8">
-                                {adminAvatar && <AvatarImage src={adminAvatar.imageUrl} />}
-                                <AvatarFallback>A</AvatarFallback>
-                            </Avatar>
-                            <span className="sr-only">User Profile</span>
-                        </Link>
-                    </Button>
-                </header>
-                <main className="p-6 overflow-auto bg-muted/40 flex-1">
-                    {children}
-                </main>
-            </SidebarInset>
+          </Sidebar>
+          <SidebarInset className="flex-1 w-full">
+            <header className="flex h-16 items-center justify-between border-b bg-background px-6 shrink-0">
+              <div className="flex items-center gap-4">
+                <SidebarTrigger />
+                <h1 className="text-xl font-semibold">Admin Dashboard</h1>
+              </div>
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/admin/settings">
+                  <Avatar className="h-8 w-8">
+                    {adminAvatar && <AvatarImage src={adminAvatar.imageUrl} />}
+                    <AvatarFallback>A</AvatarFallback>
+                  </Avatar>
+                  <span className="sr-only">User Profile</span>
+                </Link>
+              </Button>
+            </header>
+            <main className="p-6 overflow-auto bg-muted/40 flex-1">
+              {children}
+            </main>
+          </SidebarInset>
         </div>
-        </SidebarProvider>
+      </SidebarProvider>
     </AuthGuard>
   );
 }

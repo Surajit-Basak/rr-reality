@@ -59,11 +59,11 @@ export default function BlogListPage() {
                 ))
             ) : blogPosts && blogPosts.length > 0 ? (
                 blogPosts.map((post) => {
-                const image = PlaceHolderImages.find(p => p.id === post.imageUrl.id);
+                const image = post.imageUrl ? PlaceHolderImages.find(p => p.id === post.imageUrl.id) : null;
                 return (
                     <article key={post.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
                     <Link href={`/blog/${post.slug}`} className="block relative h-48 w-full">
-                        {image && <Image src={image.imageUrl} alt={post.imageUrl.alt} fill className="object-cover" data-ai-hint={image.imageHint} />}
+                        {image && post.imageUrl && <Image src={image.imageUrl} alt={post.imageUrl.alt} fill className="object-cover" data-ai-hint={image.imageHint} />}
                     </Link>
                     <div className="p-6 flex flex-col flex-grow">
                         <div className="mb-2">
@@ -95,4 +95,3 @@ export default function BlogListPage() {
     </div>
   );
 }
-

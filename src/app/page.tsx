@@ -378,12 +378,12 @@ export default function HomePage() {
                   ))
                 ) : (
                   blogPosts?.map((post: BlogPost) => {
-                    const image = PlaceHolderImages.find(p => p.id === post.imageUrl.id);
+                    const image = post.imageUrl ? PlaceHolderImages.find(p => p.id === post.imageUrl.id) : null;
                     return (
                       <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
                         <div className="p-4">
                           <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
-                            {image && <Link href={`/blog/${post.slug}`} className="block h-48 bg-cover bg-center relative">
+                            {image && post.imageUrl && <Link href={`/blog/${post.slug}`} className="block h-48 bg-cover bg-center relative">
                               <Image src={image.imageUrl} alt={post.imageUrl.alt} fill className="object-cover" data-ai-hint={image.imageHint} />
                             </Link>}
                             <div className="p-6 flex flex-col flex-grow">
@@ -500,4 +500,3 @@ export default function HomePage() {
     </div>
   );
 }
-

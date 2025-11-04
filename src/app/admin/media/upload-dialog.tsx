@@ -64,7 +64,7 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
 
     try {
       // 1. Upload to Firebase Storage
-      const storageRef = ref(storage, `property-images/${id}-${file.name}`);
+      const storageRef = ref(storage, `property-images/${id}`);
       const uploadResult = await uploadBytes(storageRef, file);
       
       // 2. Get the public URL

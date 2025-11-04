@@ -1,6 +1,6 @@
 'use server';
 
-import { storage } from '@/firebase';
+import { storage } from '@/firebase/client';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ImagePlaceholder } from '@/lib/placeholder-images';
 import * as fs from 'fs/promises';

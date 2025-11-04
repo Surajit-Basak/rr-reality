@@ -10,8 +10,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, UploadCloud } from 'lucide-react';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
-import { useStorage } from '@/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { uploadImage } from './actions';
+
 
 interface UploadMediaDialogProps {
   isOpen: boolean;
@@ -26,7 +26,6 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
   const [id, setId] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
-  const storage = useStorage();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -51,41 +50,34 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
   };
 
   const handleSave = async () => {
-    if (!file || !id.trim() || !altText.trim() || !storage) {
+    if (!file || !id.trim() || !altText.trim()) {
       toast({
         variant: 'destructive',
         title: 'Missing Information',
-        description: 'Please select a file, fill out all fields, and ensure storage is available.',
+        description: 'Please select a file and fill out all fields.',
       });
       return;
     }
     
     setIsUploading(true);
-
+    
     try {
-      // 1. Upload to Firebase Storage
-      const storageRef = ref(storage, `property-images/${id}`);
-      const uploadResult = await uploadBytes(storageRef, file);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('id', id);
+      formData.append('altText', altText);
       
-      // 2. Get the public URL
-      const downloadURL = await getDownloadURL(uploadResult.ref);
-      
-      // 3. Create the new image object
-      const newImage: ImagePlaceholder = {
-        id: id,
-        description: altText,
-        imageUrl: downloadURL,
-        imageHint: "custom upload" // Or derive from alt text
-      };
-      
-      // 4. In a real app, we would now call a server-side function
-      // to update the `placeholder-images.json` file.
-      // For this demo, we'll just add it to the parent's state.
-      onImageAdd(newImage);
+      const result = await uploadImage(formData);
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      onImageAdd(result.newImage!);
 
       toast({
         title: "Image Uploaded!",
-        description: "The new image has been saved to Firebase Storage and added to the library.",
+        description: "The new image has been saved and added to the library.",
       });
 
       // Reset state and close dialog
@@ -95,12 +87,12 @@ export function UploadMediaDialog({ isOpen, setIsOpen, onImageAdd }: UploadMedia
       setAltText('');
       setId('');
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Upload error:", error);
         toast({
             variant: "destructive",
             title: "Upload Failed",
-            description: "There was an error uploading your image. Please try again."
+            description: error.message || "There was an error uploading your image. Please try again."
         });
     } finally {
         setIsUploading(false);

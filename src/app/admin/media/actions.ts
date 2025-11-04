@@ -1,6 +1,6 @@
 'use server';
 
-import { storage } from '@/firebase/client';
+import { storage } from '@/firebase/server';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ImagePlaceholder } from '@/lib/placeholder-images';
 import * as fs from 'fs/promises';
@@ -46,6 +46,7 @@ export async function uploadImage(formData: FormData): Promise<{ newImage?: Imag
 
   } catch (error: any) {
     console.error("Server-side upload error:", error);
+    // Be careful not to leak sensitive server error details to the client.
     return { error: error.message || 'An unknown error occurred during upload.' };
   }
 }

@@ -108,14 +108,15 @@ export const demoProperties: Omit<Property, 'id'>[] = [
     }
 ];
 
-export const demoBlogPosts: Omit<BlogPost, 'id' | 'publicationDate'>[] = [
+export const demoBlogPosts: Omit<BlogPost, 'id'>[] = [
     {
         title: "5 Essential Tips for First-Time Home Buyers in the Twin Cities",
         slug: "5-tips-for-first-time-home-buyers",
         content: "Navigating the real estate market for the first time can be daunting. From securing financing to making the right offer, there are many steps involved. In this post, we break down 5 essential tips to help you on your journey to homeownership in Minneapolis-St. Paul. We'll cover getting pre-approved, understanding the local market, working with a real estate agent, and more. With these tips, you'll be better prepared to make a confident and informed decision.",
         author: "Jane Doe",
         tags: ["buying", "tips", "finance"],
-        imageUrl: { id: "blog-4", alt: "House keys on a wooden table" }
+        imageUrl: { id: "blog-4", alt: "House keys on a wooden table" },
+        publicationDate: serverTimestamp(),
     },
     {
         title: "How to Stage Your Home to Sell for Top Dollar",
@@ -123,7 +124,8 @@ export const demoBlogPosts: Omit<BlogPost, 'id' | 'publicationDate'>[] = [
         content: "When selling your home, first impressions are everything. Professional staging can make the difference between a quick sale at a great price and a property that lingers on the market. This guide provides practical, DIY tips for staging your home effectively. Learn how to declutter, arrange furniture to maximize space, and use lighting to create a warm and inviting atmosphere that will captivate potential buyers from the moment they walk in.",
         author: "John Smith",
         tags: ["selling", "staging", "market"],
-        imageUrl: { id: "blog-1", alt: "Person writing in a notebook on a desk" }
+        imageUrl: { id: "blog-1", alt: "Person writing in a notebook on a desk" },
+        publicationDate: serverTimestamp(),
     },
     {
         title: "Understanding the Current Twin Cities Housing Market: A 2024 Mid-Year Review",
@@ -131,7 +133,8 @@ export const demoBlogPosts: Omit<BlogPost, 'id' | 'publicationDate'>[] = [
         content: "The real estate market is constantly changing. In this mid-year review, we analyze the latest trends in the Minneapolis-St. Paul housing market. We'll look at inventory levels, average sale prices, and interest rate impacts. Whether you're thinking of buying or selling, this analysis will provide valuable insights to help you understand the current landscape and make strategic decisions for your real estate goals.",
         author: "Samantha Bee",
         tags: ["market update", "trends", "finance"],
-        imageUrl: { id: "blog-3", alt: "Smartphone showing financial charts" }
+        imageUrl: { id: "blog-3", alt: "Smartphone showing financial charts" },
+        publicationDate: serverTimestamp(),
     },
      {
         title: "The Top 3 Up-and-Coming Neighborhoods in the Twin Cities",
@@ -139,6 +142,7 @@ export const demoBlogPosts: Omit<BlogPost, 'id' | 'publicationDate'>[] = [
         content: "Looking for the next hot spot in the Twin Cities? We've done the research for you. In this article, we explore three up-and-coming neighborhoods that offer a great mix of affordability, amenities, and community vibe. From trendy new restaurants to beautiful parks, find out which areas are gaining popularity and why they might be the perfect place for your next home.",
         author: "Admin",
         tags: ["neighborhoods", "lifestyle", "market"],
-        imageUrl: { id: "blog-2", alt: "Person typing on a laptop" }
+        imageUrl: { id: "blog-2", alt: "Person typing on a laptop" },
+        publicationDate: serverTimestamp(),
     }
 ];

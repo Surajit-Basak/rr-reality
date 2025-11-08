@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState } from 'react';
@@ -382,33 +381,35 @@ export default function HomePage() {
                     return (
                       <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
                         <article className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
-                          {image && post.imageUrl && <Link href={`/blog/${post.slug}`} className="block h-48 bg-cover bg-center relative">
-                            <Image src={image.imageUrl} alt={post.imageUrl.alt} fill className="object-cover" data-ai-hint={image.imageHint} />
-                          </Link>}
-                          <div className="p-6 flex flex-col flex-grow">
-                            <div className="flex items-center text-sm text-gray-500 mb-3">
-                              <i className="ri-calendar-line mr-2"></i>
-                              <span>{post.publicationDate ? new Date(post.publicationDate.toDate()).toLocaleDateString() : 'N/A'}</span>
-                              <span className="mx-2">•</span>
-                              <span>5 min read</span>
+                            {image && post.imageUrl && (
+                                <Link href={`/blog/${post.slug}`} className="block h-48 bg-cover bg-center relative">
+                                <Image src={image.imageUrl} alt={post.imageUrl.alt} fill className="object-cover" data-ai-hint={image.imageHint} />
+                                </Link>
+                            )}
+                            <div className="p-6 flex flex-col flex-grow">
+                                <div className="flex items-center text-sm text-gray-500 mb-3">
+                                <i className="ri-calendar-line mr-2"></i>
+                                <span>{post.publicationDate ? new Date(post.publicationDate.toDate()).toLocaleDateString() : 'N/A'}</span>
+                                <span className="mx-2">•</span>
+                                <span>5 min read</span>
+                                </div>
+                                <h3 className="text-xl font-semibold text-primary mb-3 hover:text-secondary transition-colors flex-grow">
+                                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                                </h3>
+                                <p className="text-gray-600 mb-4 line-clamp-3">
+                                {post.content.substring(0, 100)}...
+                                </p>
+                                <div className="flex items-center justify-between mt-auto">
+                                <div className="flex gap-1">
+                                {post.tags.slice(0,2).map(tag => (
+                                    <span key={tag} className="text-secondary font-medium text-sm">{tag}</span>
+                                ))}
+                                </div>
+                                <Link href={`/blog/${post.slug}`} className="text-primary hover:text-secondary transition-colors text-sm font-medium">
+                                    Read More <i className="ri-arrow-right-line inline-block"></i>
+                                </Link>
+                                </div>
                             </div>
-                            <h3 className="text-xl font-semibold text-primary mb-3 hover:text-secondary transition-colors cursor-pointer flex-grow">
-                              <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                            </h3>
-                            <p className="text-gray-600 mb-4 line-clamp-3">
-                              {post.content.substring(0, 100)}...
-                            </p>
-                            <div className="flex items-center justify-between mt-auto">
-                              <div className="flex gap-1">
-                              {post.tags.slice(0,2).map(tag => (
-                                  <span key={tag} className="text-secondary font-medium text-sm">{tag}</span>
-                              ))}
-                              </div>
-                              <Link href={`/blog/${post.slug}`} className="text-primary hover:text-secondary transition-colors text-sm font-medium">
-                                Read More <i className="ri-arrow-right-line inline-block"></i>
-                              </Link>
-                            </div>
-                          </div>
                         </article>
                       </CarouselItem>
                     )

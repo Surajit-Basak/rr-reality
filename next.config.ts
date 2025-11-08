@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -28,8 +29,17 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        port: '',
+        pathname: '/**',
+      }
     ],
   },
+  env: {
+    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: 'studio-721582966-28a08.appspot.com',
+  }
 };
 
 export default nextConfig;

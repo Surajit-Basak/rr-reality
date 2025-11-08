@@ -8,6 +8,8 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AppSettings } from "./app-settings";
+
 
 export default function SettingsPage() {
   return (
@@ -21,7 +23,7 @@ export default function SettingsPage() {
         <Tabs defaultValue="users">
           <TabsList>
             <TabsTrigger value="users">User Management</TabsTrigger>
-            <TabsTrigger value="general" disabled>General</TabsTrigger>
+            <TabsTrigger value="app">App Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="users">
             <Card>
@@ -34,8 +36,16 @@ export default function SettingsPage() {
                 <UserManagement />
             </Card>
           </TabsContent>
-          <TabsContent value="general">
-            {/* General settings content can go here in the future */}
+          <TabsContent value="app">
+            <Card>
+                <CardHeader>
+                    <CardTitle>App Settings</CardTitle>
+                     <CardDescription>
+                        Manage general application settings and data.
+                    </CardDescription>
+                </CardHeader>
+                <AppSettings />
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

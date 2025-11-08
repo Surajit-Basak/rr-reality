@@ -68,7 +68,6 @@ export type Amenity = {
 }
 
 export type Testimonial = {
-  id: string;
   name: string;
   location: string;
   avatarId: string;
@@ -89,5 +88,3 @@ export type BlogPost = {
     seoTitle?: string;
     seoDescription?: string;
 };
-
-    

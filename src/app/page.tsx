@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PropertyCard } from "@/components/property-card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Search, ChevronRight, ChevronLeft, MapPin, Star, Phone, ShieldCheck, Cog, DollarSign, Home as HomeIcon } from "lucide-react";
+import { Search, ChevronRight, ChevronLeft, MapPin, Star, Phone, ShieldCheck, Cog, DollarSign, Home as HomeIcon, Calendar as CalendarIcon, ArrowRight, Bed, MessageCircle, User, Mail, PhoneCall } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -122,44 +122,48 @@ export default function HomePage() {
                     value={searchState.keyword}
                     onChange={(e) => handleSearchChange('keyword', e.target.value)}
                   />
-                   <i className="ri-map-pin-line text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                   <MapPin className="text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2" />
                 </div>
               </div>
               <div className="space-y-2 text-left">
                   <Label className="text-sm font-semibold text-gray-700 mb-2">Price Range</Label>
-                  <Select value={searchState.price} onValueChange={(value) => handleSearchChange('price', value)}>
-                    <SelectTrigger className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors text-left h-auto">
-                      <i className="ri-money-dollar-circle-line text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2"></i>
-                      <SelectValue placeholder="Any Price" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="any">Any Price</SelectItem>
-                      <SelectItem value="0-300000">Under $300K</SelectItem>
-                      <SelectItem value="0-500000">$300K - $500K</SelectItem>
-                      <SelectItem value="0-750000">$500K - $750K</SelectItem>
-                      <SelectItem value="750000-99999999">$750K+</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="relative">
+                    <Select value={searchState.price} onValueChange={(value) => handleSearchChange('price', value)}>
+                      <SelectTrigger className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors text-left h-auto">
+                        <DollarSign className="text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2" />
+                        <SelectValue placeholder="Any Price" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="any">Any Price</SelectItem>
+                        <SelectItem value="0-300000">Under $300K</SelectItem>
+                        <SelectItem value="0-500000">$300K - $500K</SelectItem>
+                        <SelectItem value="0-750000">$500K - $750K</SelectItem>
+                        <SelectItem value="750000-99999999">$750K+</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
               </div>
               <div className="space-y-2 text-left">
                 <Label className="text-sm font-semibold text-gray-700 mb-2">Bedrooms</Label>
-                 <Select value={searchState.bedrooms} onValueChange={(value) => handleSearchChange('bedrooms', value)}>
-                    <SelectTrigger className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors text-left h-auto">
-                       <i className="ri-hotel-bed-line text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2"></i>
-                      <SelectValue placeholder="Any Beds" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="any">Any Beds</SelectItem>
-                      <SelectItem value="1">1+ Bedroom</SelectItem>
-                      <SelectItem value="2">2+ Bedrooms</SelectItem>
-                      <SelectItem value="3">3+ Bedrooms</SelectItem>
-                      <SelectItem value="4">4+ Bedrooms</SelectItem>
-                      <SelectItem value="5">5+ Bedrooms</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="relative">
+                   <Select value={searchState.bedrooms} onValueChange={(value) => handleSearchChange('bedrooms', value)}>
+                      <SelectTrigger className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-sm bg-gray-50 hover:bg-white transition-colors text-left h-auto">
+                         <Bed className="text-lg text-secondary absolute left-4 top-1/2 transform -translate-y-1/2" />
+                        <SelectValue placeholder="Any Beds" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="any">Any Beds</SelectItem>
+                        <SelectItem value="1">1+ Bedroom</SelectItem>
+                        <SelectItem value="2">2+ Bedrooms</SelectItem>
+                        <SelectItem value="3">3+ Bedrooms</SelectItem>
+                        <SelectItem value="4">4+ Bedrooms</SelectItem>
+                        <SelectItem value="5">5+ Bedrooms</SelectItem>
+                      </SelectContent>
+                    </Select>
+                </div>
               </div>
               <Button type="submit" className="w-full bg-secondary text-white py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all hover:shadow-lg text-sm font-semibold transform hover:scale-105 duration-200 flex items-center justify-center h-auto">
-                <i className="ri-search-line text-lg mr-2"></i>
+                <Search className="text-lg mr-2" />
                 Search Properties
               </Button>
             </form>
@@ -351,7 +355,7 @@ export default function HomePage() {
             <Button className="bg-secondary text-white px-8 py-4 text-lg rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap h-auto">
               Start Home Search
             </Button>
-            <Button variant="outline" className="bg-white text-primary px-8 py-4 text-lg rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap h-auto">
+            <Button variant="outline" className="bg-white text-primary px-8 py-4 text-lg rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap h-auto hover:text-primary">
               Get Free Home Valuation
             </Button>
           </div>
@@ -388,7 +392,7 @@ export default function HomePage() {
                             )}
                             <div className="p-6 flex flex-col flex-grow">
                                 <div className="flex items-center text-sm text-gray-500 mb-3">
-                                <i className="ri-calendar-line mr-2"></i>
+                                <CalendarIcon className="mr-2 h-4 w-4" />
                                 <span>{post.publicationDate ? new Date(post.publicationDate.toDate()).toLocaleDateString() : 'N/A'}</span>
                                 <span className="mx-2">•</span>
                                 <span>5 min read</span>
@@ -406,7 +410,7 @@ export default function HomePage() {
                                 ))}
                                 </div>
                                 <Link href={`/blog/${post.slug}`} className="text-primary hover:text-secondary transition-colors text-sm font-medium">
-                                    Read More <i className="ri-arrow-right-line inline-block"></i>
+                                    Read More <ArrowRight className="inline-block h-4 w-4" />
                                 </Link>
                                 </div>
                             </div>
@@ -493,7 +497,7 @@ export default function HomePage() {
 
        <div className="fixed bottom-6 right-6 z-50">
         <a href="https://wa.me/16125550123?text=Hi%2C%20I%27m%20interested%20in%20your%20real%20estate%20services" target="_blank" className="bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
-          <i className="ri-whatsapp-fill text-2xl"></i>
+          <MessageCircle className="text-2xl" />
         </a>
       </div>
     </div>
